@@ -1,18 +1,6 @@
 {
   "version": 2,
   "framework": "nextjs",
-  "builds": [
-    {
-      "src": "api/price-service/index.js",
-      "use": "@vercel/node"
-    }
-  ],
-  "routes": [
-    {
-      "src": "/api/(.*)",
-      "dest": "/api/price-service/index.js"
-    }
-  ],
   "env": {
     "NEXT_PUBLIC_APP_URL": "https://yield-desk.com"
   }
