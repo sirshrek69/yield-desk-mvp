@@ -121,7 +121,7 @@ export default function MarketsPage() {
 
   useEffect(() => {
     // Fetch products
-    fetch('http://localhost:4001/products')
+    fetch('/api/price-service/products')
       .then(res => res.json())
       .then(data => {
         setProducts(data.products)
@@ -131,7 +131,7 @@ export default function MarketsPage() {
       })
 
     // Fetch primary deals
-    fetch('http://localhost:4001/primary-deals')
+    fetch('/api/price-service/primary-deals')
       .then(res => res.json())
       .then(data => {
         setPrimaryDeals(data.deals)
