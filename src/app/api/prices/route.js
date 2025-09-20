@@ -5,6 +5,10 @@ import { fetchAllMarketData, calculateRealBondPrice } from '../../../lib/marketD
 import { addPriceDataPoint } from '../../../lib/priceHistory'
 import { broadcastPriceUpdate } from '../../../lib/streamUtils'
 
+// Force runtime execution - prevent static generation
+export const runtime = 'nodejs'
+export const dynamic = 'force-dynamic'
+
 // Load real data from JSON files
 const instrumentsPath = join(process.cwd(), 'src/app/api/price-service/instrument-seed.json')
 const instruments = JSON.parse(readFileSync(instrumentsPath, 'utf8'))

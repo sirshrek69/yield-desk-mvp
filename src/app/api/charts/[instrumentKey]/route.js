@@ -1,6 +1,10 @@
 import { NextResponse } from 'next/server'
 import { getChartData, getAvailableTimeframes } from '../../../../lib/priceHistory'
 
+// Force runtime execution - prevent static generation
+export const runtime = 'nodejs'
+export const dynamic = 'force-dynamic'
+
 export async function GET(request, { params }) {
   try {
     const { instrumentKey } = params

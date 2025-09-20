@@ -1,6 +1,10 @@
 import { NextResponse } from 'next/server'
 import { addConnection, removeConnection } from '../../../../lib/streamUtils'
 
+// Force runtime execution - prevent static generation
+export const runtime = 'nodejs'
+export const dynamic = 'force-dynamic'
+
 export async function GET() {
   const encoder = new TextEncoder()
   
