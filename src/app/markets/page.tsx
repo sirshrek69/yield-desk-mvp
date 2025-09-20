@@ -425,7 +425,8 @@ export default function MarketsPage() {
           revenue: "$77.8B (2023)",
           employees: "311,000+",
           founded: "1847"
-      live         keyHighlights: [
+        },
+        keyHighlights: [
           "Market leader in industrial automation and digitalization",
           "Strong position in renewable energy and grid infrastructure",
           "Expanding healthcare technology portfolio",
