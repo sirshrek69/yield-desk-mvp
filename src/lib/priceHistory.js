@@ -146,7 +146,48 @@ export function generateSampleOHLCData(instrumentKey, basePrice = 100, baseYTM =
   let currentYTM = baseYTM
   
   for (let i = 0; i < dataPoints; i++) {
-    const timestamp = now - startOffset + (i * intervalMs)
+    // Generate proper timestamps with correct intervals
+    let timestamp
+    const currentTime = new Date(now)
+    
+    switch (timeframe) {
+      case '1H':
+        // Generate hourly timestamps: 00:00, 01:00, 02:00, etc.
+        const hourTime = new Date(currentTime)
+        hourTime.setHours(currentTime.getHours() - (dataPoints - 1 - i), 0, 0, 0)
+        timestamp = hourTime.getTime()
+        break
+      case '4H':
+        // Generate 4-hour timestamps: 00:00, 04:00, 08:00, 12:00, 16:00, 20:00
+        const fourHourTime = new Date(currentTime)
+        const hoursBack = (dataPoints - 1 - i) * 4
+        fourHourTime.setHours(currentTime.getHours() - hoursBack, 0, 0, 0)
+        timestamp = fourHourTime.getTime()
+        break
+      case '1D':
+        // Generate daily timestamps: midnight each day
+        const dayTime = new Date(currentTime)
+        dayTime.setDate(currentTime.getDate() - (dataPoints - 1 - i))
+        dayTime.setHours(0, 0, 0, 0)
+        timestamp = dayTime.getTime()
+        break
+      case '1W':
+        // Generate weekly timestamps: Monday midnight each week
+        const weekTime = new Date(currentTime)
+        weekTime.setDate(currentTime.getDate() - ((dataPoints - 1 - i) * 7))
+        weekTime.setHours(0, 0, 0, 0)
+        timestamp = weekTime.getTime()
+        break
+      case '1M':
+        // Generate monthly timestamps: 1st of each month
+        const monthTime = new Date(currentTime)
+        monthTime.setMonth(currentTime.getMonth() - (dataPoints - 1 - i), 1)
+        monthTime.setHours(0, 0, 0, 0)
+        timestamp = monthTime.getTime()
+        break
+      default:
+        timestamp = now - startOffset + (i * intervalMs)
+    }
     
     // Generate realistic OHLC data
     const volatility = 0.01 + (Math.random() * 0.02) // 1-3% volatility
