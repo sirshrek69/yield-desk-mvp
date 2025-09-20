@@ -85,16 +85,11 @@ export function addPriceDataPoint(instrumentKey, priceData) {
 
 // Get price history for a specific instrument and timeframe
 export function getPriceHistory(instrumentKey, timeframe = '1D') {
-  if (!priceHistory.has(instrumentKey)) {
-    return []
-  }
+  // Generate fresh data each time to ensure correct timestamps
+  const basePrice = 100 + (Math.random() - 0.5) * 20 // 90-110 range
+  const baseYTM = 4.5 + (Math.random() - 0.5) * 2   // 3.5-5.5% range
   
-  const instrumentHistory = priceHistory.get(instrumentKey)
-  if (!instrumentHistory.has(timeframe)) {
-    return []
-  }
-  
-  return instrumentHistory.get(timeframe)
+  return generateSampleOHLCData(instrumentKey, basePrice, baseYTM, timeframe)
 }
 
 // Get all available timeframes
