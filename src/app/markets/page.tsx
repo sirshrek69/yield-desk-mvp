@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import ReactCountryFlag from 'react-country-flag'
 import { useRealTimePricing } from '../../lib/useRealTimePricing'
-import TradingChart from '../../components/TradingChart'
+import CandlestickChart from '../../components/CandlestickChart'
 
 interface Product {
   id: string
@@ -1057,9 +1057,9 @@ export default function MarketsPage() {
                 </div>
               </div>
 
-              {/* Trading Chart */}
+              {/* Candlestick Chart */}
               <div className="border-t border-border pt-6">
-                <TradingChart
+                <CandlestickChart
                   instrumentKey={selectedProduct.id}
                   instrumentName={selectedProduct.name}
                   currentPrice={selectedProduct.priceClean}
