@@ -104,6 +104,7 @@ export default function MarketsPage() {
   const [isPrimaryModalOpen, setIsPrimaryModalOpen] = useState(false)
   const [loading, setLoading] = useState(true)
   const [walletBalance, setWalletBalance] = useState(10000) // Starting balance
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false)
   const [portfolio, setPortfolio] = useState<Array<{
     id: string
     productId: string
@@ -545,15 +546,15 @@ export default function MarketsPage() {
       {/* Header */}
       <div className="border-b border-border bg-card">
         <div className="container mx-auto px-4 py-4">
-          <div className="rounded-lg border bg-card text-card-foreground shadow-sm p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <h1 className="text-2xl font-bold gradient-text">Yield Desk Markets</h1>
-                <p className="text-muted-foreground mt-1">
+          <div className="rounded-lg border bg-card text-card-foreground shadow-sm p-4 md:p-6">
+            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+              <div className="flex-1">
+                <h1 className="text-xl md:text-2xl font-bold gradient-text">Yield Desk Markets</h1>
+                <p className="text-muted-foreground mt-1 text-sm md:text-base">
                   Invest in tokenised bonds with transparent pricing and instant settlement.
                 </p>
               </div>
-              <div className="text-right">
+              <div className="flex flex-col md:text-right">
                 <div className="flex items-center gap-2 text-sm">
                   <div className={`w-2 h-2 rounded-full ${isConnected ? 'bg-green-500' : 'bg-red-500'}`}></div>
                   <span className={isConnected ? 'text-green-600' : 'text-red-600'}>
@@ -573,9 +574,9 @@ export default function MarketsPage() {
 
       {/* Filters */}
       <div className="container mx-auto px-4 py-4">
-        <div className="rounded-lg border bg-card text-card-foreground shadow-sm p-6">
+        <div className="rounded-lg border bg-card text-card-foreground shadow-sm p-4 md:p-6">
           <h2 className="text-lg font-semibold mb-4">Filters</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-3 md:gap-4">
             {/* Rating Filter */}
             <div>
               <label className="text-sm font-medium mb-2 block">Rating</label>
@@ -681,7 +682,7 @@ export default function MarketsPage() {
           </div>
           
           {/* Clear Filters Button */}
-          <div className="mt-4 flex justify-end">
+          <div className="mt-4 flex justify-center md:justify-end">
             <button
               onClick={() => setFilters({
                 rating: 'All',
@@ -691,7 +692,7 @@ export default function MarketsPage() {
                 raiseSizeSort: 'None',
                 minCommitmentSort: 'None'
               })}
-              className="px-4 py-2 text-sm border border-input bg-background hover:bg-accent hover:text-accent-foreground rounded-md transition-colors"
+              className="px-4 py-2 text-sm border border-input bg-background hover:bg-accent hover:text-accent-foreground rounded-md transition-colors w-full md:w-auto"
             >
               Clear Filters
             </button>
@@ -701,10 +702,70 @@ export default function MarketsPage() {
 
       {/* Main Content */}
       <div className="container mx-auto px-4 py-6">
-        <div className="grid grid-cols-12 gap-6 h-[calc(100vh-400px)]">
-          {/* Left Panel - Category Menu */}
-          <div className="col-span-3">
-            <div className="rounded-lg border bg-card text-card-foreground shadow-sm h-full">
+        {/* Mobile Category Toggle */}
+        <div className="md:hidden mb-4">
+          <button
+            onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+            className="w-full px-4 py-3 rounded-lg border bg-card text-card-foreground shadow-sm flex items-center justify-between"
+          >
+            <span className="font-medium">Categories</span>
+            <span className="text-sm text-muted-foreground">
+              {selectedCategory === 'All' 
+                ? `${products.length} products`
+                : selectedCategory === 'Primary Corporate Issuance'
+                ? `${primaryDeals.length} deals`
+                : `${products.filter(p => p.category === selectedCategory).length} products`
+              }
+            </span>
+            <svg 
+              className={`w-5 h-5 transition-transform ${isSidebarOpen ? 'rotate-180' : ''}`} 
+              fill="none" 
+              stroke="currentColor" 
+              viewBox="0 0 24 24"
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+            </svg>
+          </button>
+          
+          {/* Mobile Category Dropdown */}
+          {isSidebarOpen && (
+            <div className="mt-2 rounded-lg border bg-card text-card-foreground shadow-sm p-4">
+              <div className="space-y-2">
+                {categories.map((category) => (
+                  <button
+                    key={category}
+                    onClick={() => {
+                      setSelectedCategory(category)
+                      setIsSidebarOpen(false)
+                    }}
+                    className={`w-full text-left px-3 py-2 rounded-lg transition-colors ${
+                      selectedCategory === category
+                        ? "bg-brand-primary text-white"
+                        : "text-muted-foreground hover:bg-accent hover:text-accent-foreground"
+                    }`}
+                  >
+                    <div className="flex items-center justify-between">
+                      <span className="font-medium text-sm">{category}</span>
+                      <span className="text-xs bg-secondary text-secondary-foreground px-2 py-1 rounded">
+                        {category === 'All' 
+                          ? products.length 
+                          : category === 'Primary Corporate Issuance'
+                          ? primaryDeals.length
+                          : products.filter(p => p.category === category).length
+                        }
+                      </span>
+                    </div>
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+
+        <div className="grid grid-cols-12 gap-6">
+          {/* Desktop Left Panel - Category Menu */}
+          <div className="hidden md:block col-span-3">
+            <div className="rounded-lg border bg-card text-card-foreground shadow-sm sticky top-4">
               <div className="p-6">
                 <h2 className="text-lg font-semibold mb-4">Categories</h2>
                 <div className="space-y-2">
@@ -737,7 +798,7 @@ export default function MarketsPage() {
           </div>
 
           {/* Center Panel - Product List */}
-          <div className="col-span-9">
+          <div className="col-span-12 md:col-span-9">
             <div className="rounded-lg border bg-card text-card-foreground shadow-sm h-full flex flex-col">
               <div className="p-6 border-b">
                 <div className="flex items-center justify-between">
@@ -765,11 +826,11 @@ export default function MarketsPage() {
                       </div>
                     </div>
                   ) : (
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4">
                       {filteredPrimaryDeals.map((deal) => (
                         <div
                           key={deal.id}
-                          className="p-4 rounded-lg border cursor-pointer transition-all hover:shadow-md hover:border-brand-primary/50 bg-card hover:bg-card/80 h-[28rem] flex flex-col"
+                          className="p-3 md:p-4 rounded-lg border cursor-pointer transition-all hover:shadow-md hover:border-brand-primary/50 bg-card hover:bg-card/80 h-auto md:h-[28rem] flex flex-col"
                           onClick={() => handlePrimaryDealClick(deal)}
                         >
                           {/* Header */}
@@ -864,11 +925,11 @@ export default function MarketsPage() {
                     </div>
                   </div>
                 ) : (
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4">
                     {filteredProducts.map((product) => (
                       <div
                         key={product.id}
-                        className="p-4 rounded-lg border cursor-pointer transition-all hover:shadow-md hover:border-brand-primary/50 bg-card hover:bg-card/80 h-96 flex flex-col"
+                        className="p-3 md:p-4 rounded-lg border cursor-pointer transition-all hover:shadow-md hover:border-brand-primary/50 bg-card hover:bg-card/80 h-auto md:h-96 flex flex-col"
                         onClick={() => handleProductClick(product)}
                       >
                         {/* Header */}
@@ -1154,23 +1215,23 @@ export default function MarketsPage() {
 
       {/* Primary Deal Modal */}
       {isPrimaryModalOpen && selectedPrimaryDeal && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-background rounded-lg shadow-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto">
-            <div className="p-6">
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-2 md:p-4">
+          <div className="bg-background rounded-lg shadow-lg max-w-4xl w-full max-h-[95vh] md:max-h-[90vh] overflow-y-auto">
+            <div className="p-4 md:p-6">
               {/* Modal Header */}
-              <div className="flex items-center justify-between mb-6">
-                <div className="flex items-center gap-4">
-                  <div className="w-16 h-16 flex items-center justify-center bg-white rounded-lg border border-gray-200 shadow-sm">
+              <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6 gap-4">
+                <div className="flex items-center gap-3 md:gap-4">
+                  <div className="w-12 h-12 md:w-16 md:h-16 flex items-center justify-center bg-white rounded-lg border border-gray-200 shadow-sm">
                     <img
                       src={getCompanyLogoUrl(selectedPrimaryDeal.issuerName)}
                       alt={`${selectedPrimaryDeal.issuerName} logo`}
-                      className="w-12 h-12 object-contain"
+                      className="w-8 h-8 md:w-12 md:h-12 object-contain"
                       onError={(e) => {
                         // Fallback to a generic company icon if logo fails to load
                         e.currentTarget.style.display = 'none'
                         e.currentTarget.parentElement!.innerHTML = `
-                          <div class="w-12 h-12 bg-gray-100 rounded flex items-center justify-center">
-                            <svg class="w-8 h-8 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                          <div class="w-8 h-8 md:w-12 md:h-12 bg-gray-100 rounded flex items-center justify-center">
+                            <svg class="w-6 h-6 md:w-8 md:h-8 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
                               <path fill-rule="evenodd" d="M4 4a2 2 0 012-2h8a2 2 0 012 2v12a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 0v12h8V4H6z" clip-rule="evenodd"/>
                             </svg>
                           </div>
@@ -1179,8 +1240,8 @@ export default function MarketsPage() {
                     />
                   </div>
                   <div>
-                    <h2 className="text-2xl font-bold text-foreground">{selectedPrimaryDeal.issuerName}</h2>
-                    <p className="text-muted-foreground">Primary Corporate Issuance</p>
+                    <h2 className="text-xl md:text-2xl font-bold text-foreground">{selectedPrimaryDeal.issuerName}</h2>
+                    <p className="text-sm md:text-base text-muted-foreground">Primary Corporate Issuance</p>
                   </div>
                 </div>
                 <button
