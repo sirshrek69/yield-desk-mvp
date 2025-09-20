@@ -1,6 +1,6 @@
 # Yield Desk MVP
 
-A modern platform for tokenized fixed income products built with Next.js and deployed on Vercel, featuring **real market data integration** and **live trading charts**.
+A modern platform for tokenized fixed income products built with Next.js and deployed on Vercel, featuring **real market data integration**, **live trading charts**, and **TypeScript compatibility**.
 
 ## Features
 
