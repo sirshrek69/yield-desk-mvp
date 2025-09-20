@@ -548,7 +548,7 @@ export default function MarketsPage() {
               <div>
                 <h1 className="text-2xl font-bold gradient-text">Yield Desk Markets</h1>
                 <p className="text-muted-foreground mt-1">
-                  Invest in tokenised bonds with transparent pricing and instant settlement
+                  Invest in tokenised bonds with transparent pricing and instant settlement.
                 </p>
               </div>
               <div className="text-right">
