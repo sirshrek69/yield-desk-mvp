@@ -25,6 +25,7 @@ interface Product {
   maturityDate: string
   priceClean: number
   ytmPct: number
+  change24h?: number
   minInvestment: number
   increment: number
   // New minimum investment fields
@@ -424,8 +425,7 @@ export default function MarketsPage() {
           revenue: "$77.8B (2023)",
           employees: "311,000+",
           founded: "1847"
-        },
-        keyHighlights: [
+      live         keyHighlights: [
           "Market leader in industrial automation and digitalization",
           "Strong position in renewable energy and grid infrastructure",
           "Expanding healthcare technology portfolio",
