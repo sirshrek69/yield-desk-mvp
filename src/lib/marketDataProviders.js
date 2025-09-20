@@ -105,8 +105,19 @@ function getNextMarketOpen() {
   }
 }
 
+// Check if we're in build time (Vercel deployment)
+function isBuildTime() {
+  return process.env.VERCEL === '1' && process.env.NODE_ENV === 'production'
+}
+
 // Helper function to make API requests with error handling
 async function fetchWithRetry(url, options = {}, retries = 3) {
+  // During build time, skip external API calls to prevent timeouts
+  if (isBuildTime()) {
+    console.log('🚫 Build time detected - skipping external API calls to prevent timeout')
+    throw new Error('Build time - using fallback data')
+  }
+
   for (let i = 0; i < retries; i++) {
     try {
       const response = await fetch(url, {

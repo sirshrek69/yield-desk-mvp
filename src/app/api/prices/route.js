@@ -78,6 +78,12 @@ function generatePriceMovement(instrument, currentPrice, currentYTM) {
 // Initialize price cache with real market data
 async function initializePriceCache() {
   try {
+    // During build time, skip external API calls to prevent timeouts
+    if (isBuildTime()) {
+      console.log('🚫 Build time detected - using fallback data for initialization')
+      throw new Error('Build time - using fallback data')
+    }
+
     // Fetch real market data
     marketData = await fetchAllMarketData()
     
@@ -213,16 +219,26 @@ async function updateAllPrices() {
   lastUpdate = now
 }
 
+// Check if we're in build time (Vercel deployment)
+function isBuildTime() {
+  return process.env.VERCEL === '1' && process.env.NODE_ENV === 'production'
+}
+
 // Initialize cache on first load
 if (priceCache.size === 0) {
   initializePriceCache()
 }
 
-// Update prices every 2 seconds and broadcast to connected clients
-setInterval(async () => {
-  await updateAllPrices()
-  broadcastUpdates()
-}, 2000)
+// Only start price updates if not in build time (prevents build timeouts)
+if (!isBuildTime()) {
+  // Update prices every 2 seconds and broadcast to connected clients
+  setInterval(async () => {
+    await updateAllPrices()
+    broadcastUpdates()
+  }, 2000)
+} else {
+  console.log('🚫 Build time detected - skipping price update intervals to prevent timeout')
+}
 
 // Broadcast price updates to connected clients
 function broadcastUpdates() {
