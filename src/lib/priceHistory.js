@@ -248,12 +248,18 @@ export function getChartData(instrumentKey, timeframe = '1D') {
     let timeLabel, dateLabel
     switch (timeframe) {
       case '1H':
-      case '4H':
         timeLabel = date.toLocaleTimeString('en-US', { 
           hour: '2-digit', 
           minute: '2-digit',
           hour12: false 
         })
+        dateLabel = date.toLocaleDateString('en-US', {
+          month: 'short',
+          day: 'numeric'
+        })
+        break
+      case '4H':
+        timeLabel = `${date.getHours().toString().padStart(2, '0')}:00`
         dateLabel = date.toLocaleDateString('en-US', {
           month: 'short',
           day: 'numeric'
