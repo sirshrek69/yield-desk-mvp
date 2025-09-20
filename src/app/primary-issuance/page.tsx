@@ -27,7 +27,7 @@ export default function PrimaryIssuancePage() {
   const [submitting, setSubmitting] = useState(false)
 
   useEffect(() => {
-    fetch('http://localhost:4001/primary-deals')
+    fetch('/api/primary-deals')
       .then(res => res.json())
       .then(data => {
         setDeals(data.deals)
