@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import ReactCountryFlag from 'react-country-flag'
 import { useRealTimePricing } from '../../lib/useRealTimePricing'
+import TradingChart from '../../components/TradingChart'
 
 interface Product {
   id: string
@@ -1056,6 +1057,15 @@ export default function MarketsPage() {
                 </div>
               </div>
 
+              {/* Trading Chart */}
+              <div className="border-t border-border pt-6">
+                <TradingChart
+                  instrumentKey={selectedProduct.id}
+                  instrumentName={selectedProduct.name}
+                  currentPrice={selectedProduct.priceClean}
+                  currentYTM={selectedProduct.ytmPct}
+                />
+              </div>
 
               {/* Investment Limits */}
               <div className="space-y-2">

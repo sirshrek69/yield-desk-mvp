@@ -56,6 +56,55 @@ let dataCache = {
   cacheExpiry: 5 * 60 * 1000 // 5 minutes
 }
 
+// Check if markets are open (simplified - in production you'd use a proper market calendar)
+function isMarketOpen() {
+  const now = new Date()
+  const dayOfWeek = now.getDay() // 0 = Sunday, 6 = Saturday
+  const hour = now.getHours()
+  
+  // Markets closed on weekends
+  if (dayOfWeek === 0 || dayOfWeek === 6) {
+    return false
+  }
+  
+  // Markets typically open 9 AM - 4 PM EST (simplified)
+  // In production, you'd check against actual market hours including holidays
+  return hour >= 9 && hour < 16
+}
+
+// Get next market open time
+function getNextMarketOpen() {
+  const now = new Date()
+  const dayOfWeek = now.getDay()
+  
+  if (dayOfWeek === 6) { // Saturday
+    // Next Monday at 9 AM
+    const nextMonday = new Date(now)
+    nextMonday.setDate(now.getDate() + 2)
+    nextMonday.setHours(9, 0, 0, 0)
+    return nextMonday.toISOString()
+  } else if (dayOfWeek === 0) { // Sunday
+    // Tomorrow (Monday) at 9 AM
+    const nextMonday = new Date(now)
+    nextMonday.setDate(now.getDate() + 1)
+    nextMonday.setHours(9, 0, 0, 0)
+    return nextMonday.toISOString()
+  } else {
+    // Weekday - either today at 9 AM or tomorrow at 9 AM
+    const today = new Date(now)
+    today.setHours(9, 0, 0, 0)
+    
+    if (now < today) {
+      return today.toISOString()
+    } else {
+      const tomorrow = new Date(now)
+      tomorrow.setDate(now.getDate() + 1)
+      tomorrow.setHours(9, 0, 0, 0)
+      return tomorrow.toISOString()
+    }
+  }
+}
+
 // Helper function to make API requests with error handling
 async function fetchWithRetry(url, options = {}, retries = 3) {
   for (let i = 0; i < retries; i++) {
@@ -197,6 +246,7 @@ export async function fetchCorporateBondSpreads() {
 // Main function to fetch all market data
 export async function fetchAllMarketData() {
   const now = Date.now()
+  const marketOpen = isMarketOpen()
   
   // Check if we have recent cached data
   if (dataCache.lastUpdate && (now - dataCache.lastUpdate) < dataCache.cacheExpiry) {
@@ -204,6 +254,11 @@ export async function fetchAllMarketData() {
       treasuryRates: dataCache.treasuryRates,
       exchangeRates: dataCache.exchangeRates,
       corporateSpreads: dataCache.corporateSpreads,
+      marketStatus: {
+        isOpen: marketOpen,
+        nextOpen: getNextMarketOpen(),
+        message: marketOpen ? 'Markets are open' : 'Markets are closed'
+      },
       lastUpdate: dataCache.lastUpdate,
       cached: true
     }
@@ -229,6 +284,11 @@ export async function fetchAllMarketData() {
       treasuryRates,
       exchangeRates,
       corporateSpreads,
+      marketStatus: {
+        isOpen: marketOpen,
+        nextOpen: getNextMarketOpen(),
+        message: marketOpen ? 'Markets are open' : 'Markets are closed'
+      },
       lastUpdate: new Date().toISOString(),
       cached: false
     }

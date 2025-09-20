@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server'
 import { readFileSync } from 'fs'
 import { join } from 'path'
 import { fetchAllMarketData, calculateRealBondPrice } from '../../../lib/marketDataProviders'
+import { addPriceDataPoint } from '../../../lib/priceHistory'
 
 // Load real data from JSON files
 const instrumentsPath = join(process.cwd(), 'src/app/api/price-service/instrument-seed.json')
@@ -153,6 +154,12 @@ async function updateAllPrices() {
     }
   }
   
+  // Don't update prices when markets are closed (except for initial load)
+  if (marketData?.marketStatus && !marketData.marketStatus.isOpen && priceCache.size > 0) {
+    console.log('🚫 Markets are closed - no price updates')
+    return
+  }
+  
   instruments.forEach(instrument => {
     const cached = priceCache.get(instrument.instrumentKey)
     if (!cached) return
@@ -176,14 +183,20 @@ async function updateAllPrices() {
     // Calculate 24h change
     const change24h = ((newPrice - cached.price) / cached.price) * 100
     
-    priceCache.set(instrument.instrumentKey, {
+    const volume = Math.floor(Math.random() * 5000000) + 500000
+    
+    const priceData = {
       price: Number(newPrice.toFixed(2)),
       ytm: Number(newYTM.toFixed(2)),
+      volume,
+      change24h: Number(change24h.toFixed(2))
+    }
+    
+    priceCache.set(instrument.instrumentKey, {
+      ...priceData,
       baseRate: cached.baseRate,
       creditSpread: cached.creditSpread,
       lastUpdate: now,
-      change24h: Number(change24h.toFixed(2)),
-      volume: Math.floor(Math.random() * 5000000) + 500000,
       marketData: marketData ? {
         treasuryRate: marketData.treasuryRates['10Y'],
         creditSpread: cached.creditSpread,
@@ -191,6 +204,9 @@ async function updateAllPrices() {
         lastMarketUpdate: marketData.lastUpdate
       } : cached.marketData
     })
+    
+    // Store historical data for charts
+    addPriceDataPoint(instrument.instrumentKey, priceData)
   })
   
   lastUpdate = now
@@ -252,13 +268,16 @@ export async function GET() {
     prices,
     lastUpdate: new Date(lastUpdate).toISOString(),
     totalInstruments: prices.length,
-    updateFrequency: '2 seconds',
+    updateFrequency: marketData?.marketStatus?.isOpen ? '2 seconds' : 'Markets closed',
     marketData: marketData ? {
       treasuryRates: marketData.treasuryRates,
       exchangeRates: marketData.exchangeRates,
+      marketStatus: marketData.marketStatus,
       lastMarketUpdate: marketData.lastUpdate,
       dataSource: marketData.treasuryRates.source
     } : null,
-    pricingSource: 'real-time market data with realistic simulation'
+    pricingSource: marketData?.marketStatus?.isOpen ? 
+      'real-time market data with realistic simulation' : 
+      'static pricing (markets closed)'
   })
 }
