@@ -82,9 +82,37 @@ function getRatingForInstrument(instrument) {
   return rating || null
 }
 
+// Get real-time pricing data from the prices API
+async function getRealTimePricing(instrumentKey) {
+  try {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/api/prices`)
+    const data = await response.json()
+    const priceData = data.prices.find(p => p.instrumentKey === instrumentKey)
+    
+    if (priceData) {
+      return {
+        price: priceData.price,
+        ytm: priceData.ytm,
+        change24h: priceData.change24h,
+        volume: priceData.volume
+      }
+    }
+  } catch (error) {
+    console.error('Error fetching real-time pricing:', error)
+  }
+  
+  // Fallback pricing
+  return {
+    price: 100 + (Math.random() - 0.5) * 10,
+    ytm: 4.0 + (Math.random() - 0.5) * 2,
+    change24h: (Math.random() - 0.5) * 2,
+    volume: 1000000
+  }
+}
+
 // Transform instruments to match frontend Product interface
-function transformInstruments(instruments) {
-  return instruments.map(instrument => {
+async function transformInstruments(instruments) {
+  const transformed = await Promise.all(instruments.map(async instrument => {
     const rating = getRatingForInstrument(instrument)
     const minInvestmentDisplay = calculateMinInvestmentDisplay(instrument)
     
@@ -104,12 +132,11 @@ function transformInstruments(instruments) {
         category = 'Other'
     }
     
-    // Calculate YTM (simplified - in production would use real pricing)
-    const baseYTM = instrument.couponPct || 0
-    const ytmPct = baseYTM + (Math.random() - 0.5) * 2 // Add some variation
+    // Get real-time pricing data
+    const pricingData = await getRealTimePricing(instrument.instrumentKey)
     
-    // Calculate clean price (simplified)
-    const priceClean = 100 + (Math.random() - 0.5) * 10
+    const priceClean = pricingData.price
+    const ytmPct = pricingData.ytm
     
     return {
       id: instrument.instrumentKey,
@@ -147,12 +174,19 @@ function transformInstruments(instruments) {
         { label: 'Risk Factors', url: '#' }
       ]
     }
-  })
+  }))
+  
+  return transformed
 }
 
-// Transform instruments to products
-const products = transformInstruments(instruments)
-
 export async function GET() {
-  return NextResponse.json({ products: products })
+  // Transform instruments to products with real-time pricing
+  const products = await transformInstruments(instruments)
+  
+  return NextResponse.json({ 
+    products: products,
+    lastUpdate: new Date().toISOString(),
+    totalProducts: products.length,
+    pricingSource: 'real-time simulation'
+  })
 }

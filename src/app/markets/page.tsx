@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import ReactCountryFlag from 'react-country-flag'
+import { useRealTimePricing } from '../../lib/useRealTimePricing'
 
 interface Product {
   id: string
@@ -118,6 +119,35 @@ export default function MarketsPage() {
     raiseSizeSort: 'None',
     minCommitmentSort: 'None'
   })
+
+  // Real-time pricing hook
+  const { 
+    prices: realTimePrices, 
+    lastUpdate, 
+    isConnected, 
+    connectionStatus, 
+    getPrice, 
+    getPriceChange 
+  } = useRealTimePricing()
+
+  // Update products with real-time pricing
+  useEffect(() => {
+    if (realTimePrices.size > 0 && products.length > 0) {
+      const updatedProducts = products.map(product => {
+        const realTimePrice = getPrice(product.id)
+        if (realTimePrice) {
+          return {
+            ...product,
+            priceClean: realTimePrice.price,
+            ytmPct: realTimePrice.ytm,
+            change24h: realTimePrice.change24h
+          }
+        }
+        return product
+      })
+      setProducts(updatedProducts)
+    }
+  }, [realTimePrices, getPrice, products.length])
 
   useEffect(() => {
     // Fetch products
@@ -514,10 +544,27 @@ export default function MarketsPage() {
       <div className="border-b border-border bg-card">
         <div className="container mx-auto px-4 py-4">
           <div className="rounded-lg border bg-card text-card-foreground shadow-sm p-6">
-            <h1 className="text-2xl font-bold gradient-text">Yield Desk Markets</h1>
-            <p className="text-muted-foreground mt-1">
-              Invest in tokenised bonds with transparent pricing and instant settlement
-            </p>
+            <div className="flex items-center justify-between">
+              <div>
+                <h1 className="text-2xl font-bold gradient-text">Yield Desk Markets</h1>
+                <p className="text-muted-foreground mt-1">
+                  Invest in tokenised bonds with transparent pricing and instant settlement
+                </p>
+              </div>
+              <div className="text-right">
+                <div className="flex items-center gap-2 text-sm">
+                  <div className={`w-2 h-2 rounded-full ${isConnected ? 'bg-green-500' : 'bg-red-500'}`}></div>
+                  <span className={isConnected ? 'text-green-600' : 'text-red-600'}>
+                    {isConnected ? 'Live Pricing' : 'Offline'}
+                  </span>
+                </div>
+                {lastUpdate && (
+                  <div className="text-xs text-muted-foreground mt-1">
+                    Last update: {new Date(lastUpdate).toLocaleTimeString()}
+                  </div>
+                )}
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -863,9 +910,16 @@ export default function MarketsPage() {
                         <div className="space-y-3 mb-4 flex-grow">
                           <div className="flex items-center justify-between h-8">
                             <span className="text-sm text-muted-foreground">YTM</span>
-                            <span className="font-semibold text-brand-accent text-sm">
-                              {formatPercentage(product.ytmPct)}
-                            </span>
+                            <div className="text-right">
+                              <span className="font-semibold text-brand-accent text-sm">
+                                {formatPercentage(product.ytmPct)}
+                              </span>
+                              {product.change24h !== undefined && (
+                                <div className={`text-xs ${product.change24h >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                                  {product.change24h >= 0 ? '+' : ''}{product.change24h.toFixed(2)}%
+                                </div>
+                              )}
+                            </div>
                           </div>
                           <div className="flex items-center justify-between h-8">
                             <span className="text-sm text-muted-foreground">Rating</span>
