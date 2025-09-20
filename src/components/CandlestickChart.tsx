@@ -205,8 +205,8 @@ export default function CandlestickChart({
               dataKey="close"
               stroke={priceChangeColor}
               strokeWidth={2}
-              dot={{ r: 4, fill: priceChangeColor }}
-              activeDot={{ r: 6, fill: priceChangeColor }}
+              dot={false}
+              activeDot={false}
             />
           </LineChart>
         </ResponsiveContainer>

@@ -1082,6 +1082,11 @@ export default function MarketsPage() {
                 <div className="text-sm text-muted-foreground">
                   USDC: {formatCurrency(walletBalance, 'USD')}
                 </div>
+                {walletBalance < selectedProduct.minInvestment && (
+                  <div className="text-xs text-red-600 bg-red-50 border border-red-200 rounded-md p-2">
+                    ⚠️ Insufficient balance for minimum investment of {formatCurrency(selectedProduct.minInvestment, selectedProduct.currency)}
+                  </div>
+                )}
               </div>
 
               {/* Investment Form */}
@@ -1094,10 +1099,15 @@ export default function MarketsPage() {
                     type="number"
                     id="commitmentAmount"
                     min={selectedProduct.minInvestment}
+                    max={walletBalance}
                     step={selectedProduct.increment}
-                    placeholder={`Min: ${formatCurrency(selectedProduct.minInvestment, selectedProduct.currency)}`}
+                    placeholder={`Min: ${formatCurrency(selectedProduct.minInvestment, selectedProduct.currency)}, Max: ${formatCurrency(walletBalance, 'USD')}`}
                     className="w-full px-3 py-2 rounded-md border border-input bg-background text-sm"
                   />
+                  <div className="text-xs text-muted-foreground mt-1">
+                    Available balance: {formatCurrency(walletBalance, 'USD')} | 
+                    Min investment: {formatCurrency(selectedProduct.minInvestment, selectedProduct.currency)}
+                  </div>
                 </div>
 
                 <div className="flex gap-3">
@@ -1113,9 +1123,14 @@ export default function MarketsPage() {
                       const amount = parseFloat(amountInput.value)
                       handleCommitFunds(selectedProduct, amount)
                     }}
-                    className="flex-1 px-4 py-2 text-sm bg-brand-primary text-white hover:bg-brand-primary/90 rounded-md transition-colors"
+                    disabled={walletBalance < selectedProduct.minInvestment}
+                    className={`flex-1 px-4 py-2 text-sm rounded-md transition-colors ${
+                      walletBalance < selectedProduct.minInvestment
+                        ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                        : 'bg-brand-primary text-white hover:bg-brand-primary/90'
+                    }`}
                   >
-                    Commit Funds
+                    {walletBalance < selectedProduct.minInvestment ? 'Insufficient Balance' : 'Commit Funds'}
                   </button>
                 </div>
               </div>
@@ -1328,8 +1343,13 @@ export default function MarketsPage() {
                         placeholder="Enter amount"
                         className="w-full px-3 py-2 rounded-md border border-input bg-background text-sm"
                         min={selectedPrimaryDeal.minOrderUSD || 100000}
+                        max={walletBalance}
                         step="1000"
                       />
+                      <div className="text-xs text-muted-foreground mt-1">
+                        Available balance: {formatCurrency(walletBalance, 'USD')} | 
+                        Min order: {formatLargeNumber(selectedPrimaryDeal.minOrderUSD || 100000)}
+                      </div>
                     </div>
                     <div>
                       <label className="block text-sm font-medium mb-2">Minimum Order</label>
