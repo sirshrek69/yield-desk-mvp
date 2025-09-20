@@ -3,6 +3,7 @@ import { readFileSync } from 'fs'
 import { join } from 'path'
 import { fetchAllMarketData, calculateRealBondPrice } from '../../../lib/marketDataProviders'
 import { addPriceDataPoint } from '../../../lib/priceHistory'
+import { broadcastPriceUpdate } from '../../../lib/streamUtils'
 
 // Load real data from JSON files
 const instrumentsPath = join(process.cwd(), 'src/app/api/price-service/instrument-seed.json')

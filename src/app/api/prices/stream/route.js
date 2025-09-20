@@ -1,7 +1,5 @@
 import { NextResponse } from 'next/server'
-
-// Store active connections
-const connections = new Set()
+import { addConnection, removeConnection } from '../../../../lib/streamUtils'
 
 export async function GET() {
   const encoder = new TextEncoder()
@@ -9,7 +7,7 @@ export async function GET() {
   const stream = new ReadableStream({
     start(controller) {
       // Add this connection to the set
-      connections.add(controller)
+      addConnection(controller)
       
       // Send initial connection message
       const data = JSON.stringify({
@@ -29,14 +27,14 @@ export async function GET() {
           controller.enqueue(encoder.encode(`data: ${ping}\n\n`))
         } catch (error) {
           clearInterval(pingInterval)
-          connections.delete(controller)
+          removeConnection(controller)
         }
       }, 30000) // Ping every 30 seconds
     },
     
     cancel() {
       // Clean up when connection is closed
-      connections.delete(controller)
+      removeConnection(controller)
     }
   })
   
@@ -47,28 +45,6 @@ export async function GET() {
       'Connection': 'keep-alive',
       'Access-Control-Allow-Origin': '*',
       'Access-Control-Allow-Headers': 'Cache-Control'
-    }
-  })
-}
-
-// Function to broadcast price updates to all connected clients
-export function broadcastPriceUpdate(priceData) {
-  const encoder = new TextEncoder()
-  const data = JSON.stringify({
-    type: 'priceUpdate',
-    data: priceData,
-    timestamp: new Date().toISOString()
-  })
-  
-  const message = `data: ${data}\n\n`
-  
-  // Send to all connected clients
-  connections.forEach(controller => {
-    try {
-      controller.enqueue(encoder.encode(message))
-    } catch (error) {
-      // Remove failed connections
-      connections.delete(controller)
     }
   })
 }
