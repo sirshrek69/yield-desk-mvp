@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { readFileSync } from 'fs'
 import { join } from 'path'
+import { fetchAllMarketData, calculateRealBondPrice } from '../../../lib/marketDataProviders'
 
 // Load real data from JSON files
 const instrumentsPath = join(process.cwd(), 'src/app/api/price-service/instrument-seed.json')
@@ -9,29 +10,10 @@ const instruments = JSON.parse(readFileSync(instrumentsPath, 'utf8'))
 const ratingsPath = join(process.cwd(), 'src/app/api/price-service/ratings-data.json')
 const ratingsData = JSON.parse(readFileSync(ratingsPath, 'utf8'))
 
-// In-memory price cache with real-time updates
+// In-memory price cache with real market data
 let priceCache = new Map()
 let lastUpdate = Date.now()
-
-// Currency conversion rates
-const CURRENCY_RATES = {
-  'USD': 1.0,
-  'EUR': 1.08,
-  'GBP': 1.27,
-  'JPY': 0.0067,
-  'CAD': 0.74,
-  'AUD': 0.66,
-  'NZD': 0.61,
-  'CHF': 1.12,
-  'SEK': 0.093,
-  'DKK': 0.145,
-  'NOK': 0.093,
-  'PLN': 0.25,
-  'MXN': 0.059,
-  'BRL': 0.20,
-  'CLP': 0.0011,
-  'ILS': 0.27,
-}
+let marketData = null
 
 // Helper function to get rating for instrument
 function getRatingForInstrument(instrument) {
@@ -53,37 +35,37 @@ function getRatingForInstrument(instrument) {
   return rating || null
 }
 
-// Generate realistic price movement based on bond characteristics
+// Generate realistic price movement based on real market data
 function generatePriceMovement(instrument, currentPrice, currentYTM) {
   const { group, currency, couponPct, maturityDate } = instrument
   
-  // Base volatility based on bond type
-  let volatility = 0.1 // Default 0.1%
+  // Base volatility based on bond type (realistic market volatility)
+  let volatility = 0.08 // Default 0.08% (more realistic than previous 0.1%)
   
   if (group === 'gov') {
-    volatility = 0.05 // Government bonds: lower volatility
+    volatility = 0.03 // Government bonds: lower volatility
   } else if (group === 'corp') {
-    volatility = 0.2 // Corporate bonds: higher volatility
+    volatility = 0.15 // Corporate bonds: higher volatility
   } else if (group === 'infl') {
-    volatility = 0.15 // Inflation-protected: medium volatility
+    volatility = 0.12 // Inflation-protected: medium volatility
   }
   
   // Currency risk adjustment
   if (currency !== 'USD') {
-    volatility *= 1.5 // Higher volatility for non-USD bonds
+    volatility *= 1.3 // Higher volatility for non-USD bonds
   }
   
   // Maturity risk adjustment
   const maturity = new Date(maturityDate)
   const yearsToMaturity = (maturity - new Date()) / (365.25 * 24 * 60 * 60 * 1000)
   if (yearsToMaturity > 10) {
-    volatility *= 1.3 // Longer maturity = higher volatility
+    volatility *= 1.2 // Longer maturity = higher volatility
   }
   
-  // Generate random movement
+  // Generate random movement (smaller, more realistic)
   const randomWalk = (Math.random() - 0.5) * 2 // -1 to +1
   const priceChange = randomWalk * volatility
-  const ytmChange = randomWalk * volatility * 0.5 // YTM changes less than price
+  const ytmChange = randomWalk * volatility * 0.3 // YTM changes less than price
   
   return {
     priceChange,
@@ -91,76 +73,105 @@ function generatePriceMovement(instrument, currentPrice, currentYTM) {
   }
 }
 
-// Initialize price cache with realistic starting values
-function initializePriceCache() {
-  instruments.forEach(instrument => {
-    const rating = getRatingForInstrument(instrument)
+// Initialize price cache with real market data
+async function initializePriceCache() {
+  try {
+    // Fetch real market data
+    marketData = await fetchAllMarketData()
     
-    // Base price calculation
-    let basePrice = 100
-    
-    // Adjust based on coupon rate
-    if (instrument.couponPct > 0) {
-      basePrice = 100 + (instrument.couponPct - 3) * 2 // Higher coupon = higher price
-    }
-    
-    // Adjust based on rating
-    if (rating?.composite) {
-      if (rating.composite.includes('AAA') || rating.composite.includes('Aaa')) {
-        basePrice += 2 // Premium for highest rated bonds
-      } else if (rating.composite.includes('BB') || rating.composite.includes('Ba')) {
-        basePrice -= 3 // Discount for lower rated bonds
-      }
-    }
-    
-    // Add some random variation
-    basePrice += (Math.random() - 0.5) * 4
-    
-    // Calculate base YTM
-    let baseYTM = instrument.couponPct || 0
-    if (instrument.couponPct === 0) {
-      // Discount bonds (T-bills)
-      baseYTM = 4.5 + Math.random() * 1 // 4.5-5.5% for T-bills
-    } else {
-      // Adjust YTM based on rating and maturity
-      const maturity = new Date(instrument.maturityDate)
-      const yearsToMaturity = (maturity - new Date()) / (365.25 * 24 * 60 * 60 * 1000)
+    instruments.forEach(instrument => {
+      const rating = getRatingForInstrument(instrument)
       
-      if (rating?.composite?.includes('AAA')) {
-        baseYTM += 0.5 // Lower yield for highest rated
-      } else if (rating?.composite?.includes('BB')) {
-        baseYTM += 2.0 // Higher yield for lower rated
-      }
+      // Calculate real bond price based on market data
+      const realPriceData = calculateRealBondPrice(instrument, marketData)
       
-      // Term structure adjustment
-      if (yearsToMaturity > 10) {
-        baseYTM += 1.0 // Higher yield for longer maturity
-      }
-    }
-    
-    priceCache.set(instrument.instrumentKey, {
-      price: Number(basePrice.toFixed(2)),
-      ytm: Number(baseYTM.toFixed(2)),
-      lastUpdate: Date.now(),
-      change24h: (Math.random() - 0.5) * 2, // Random 24h change
-      volume: Math.floor(Math.random() * 10000000) + 1000000 // Random volume
+      // Add some realistic variation (market bid-ask spread)
+      const spread = Math.random() * 0.1 - 0.05 // ±0.05% variation
+      const finalPrice = realPriceData.price + spread
+      
+      priceCache.set(instrument.instrumentKey, {
+        price: Number(finalPrice.toFixed(2)),
+        ytm: realPriceData.ytm,
+        baseRate: realPriceData.baseRate,
+        creditSpread: realPriceData.creditSpread,
+        lastUpdate: Date.now(),
+        change24h: (Math.random() - 0.5) * 1, // Smaller, more realistic 24h change
+        volume: Math.floor(Math.random() * 5000000) + 500000, // More realistic volume
+        marketData: {
+          treasuryRate: realPriceData.baseRate,
+          creditSpread: realPriceData.creditSpread,
+          source: marketData.treasuryRates.source,
+          lastMarketUpdate: marketData.lastUpdate
+        }
+      })
     })
-  })
+    
+    console.log('✅ Initialized price cache with real market data from:', marketData.treasuryRates.source)
+  } catch (error) {
+    console.error('Failed to initialize with real market data, using fallback:', error)
+    
+    // Fallback to simplified calculation
+    instruments.forEach(instrument => {
+      const rating = getRatingForInstrument(instrument)
+      
+      let basePrice = 100
+      let baseYTM = 4.5 // Default rate
+      
+      // Simple adjustments
+      if (rating?.composite?.includes('AAA')) {
+        baseYTM -= 0.5
+      } else if (rating?.composite?.includes('BB')) {
+        baseYTM += 2.0
+      }
+      
+      priceCache.set(instrument.instrumentKey, {
+        price: Number(basePrice.toFixed(2)),
+        ytm: Number(baseYTM.toFixed(2)),
+        lastUpdate: Date.now(),
+        change24h: 0,
+        volume: 1000000,
+        marketData: {
+          source: 'Fallback (API unavailable)',
+          lastMarketUpdate: new Date().toISOString()
+        }
+      })
+    })
+  }
 }
 
-// Update all prices with realistic movements
-function updateAllPrices() {
+// Update all prices with realistic movements based on market data
+async function updateAllPrices() {
   const now = Date.now()
+  
+  // Refresh market data every 5 minutes
+  if (!marketData || (now - marketData.lastUpdate) > 5 * 60 * 1000) {
+    try {
+      marketData = await fetchAllMarketData()
+      console.log('📈 Refreshed market data from:', marketData.treasuryRates.source)
+    } catch (error) {
+      console.warn('Failed to refresh market data, using cached:', error.message)
+    }
+  }
   
   instruments.forEach(instrument => {
     const cached = priceCache.get(instrument.instrumentKey)
     if (!cached) return
     
-    const movement = generatePriceMovement(instrument, cached.price, cached.ytm)
+    // Calculate new price based on updated market data if available
+    let newPrice, newYTM
     
-    // Apply price movement
-    const newPrice = Math.max(50, Math.min(150, cached.price + movement.priceChange))
-    const newYTM = Math.max(0.1, Math.min(15, cached.ytm + movement.ytmChange))
+    if (marketData) {
+      const realPriceData = calculateRealBondPrice(instrument, marketData)
+      const movement = generatePriceMovement(instrument, realPriceData.price, realPriceData.ytm)
+      
+      newPrice = Math.max(50, Math.min(150, realPriceData.price + movement.priceChange))
+      newYTM = Math.max(0.1, Math.min(15, realPriceData.ytm + movement.ytmChange))
+    } else {
+      // Fallback to simple movement
+      const movement = generatePriceMovement(instrument, cached.price, cached.ytm)
+      newPrice = Math.max(50, Math.min(150, cached.price + movement.priceChange))
+      newYTM = Math.max(0.1, Math.min(15, cached.ytm + movement.ytmChange))
+    }
     
     // Calculate 24h change
     const change24h = ((newPrice - cached.price) / cached.price) * 100
@@ -168,9 +179,17 @@ function updateAllPrices() {
     priceCache.set(instrument.instrumentKey, {
       price: Number(newPrice.toFixed(2)),
       ytm: Number(newYTM.toFixed(2)),
+      baseRate: cached.baseRate,
+      creditSpread: cached.creditSpread,
       lastUpdate: now,
       change24h: Number(change24h.toFixed(2)),
-      volume: Math.floor(Math.random() * 10000000) + 1000000
+      volume: Math.floor(Math.random() * 5000000) + 500000,
+      marketData: marketData ? {
+        treasuryRate: marketData.treasuryRates['10Y'],
+        creditSpread: cached.creditSpread,
+        source: marketData.treasuryRates.source,
+        lastMarketUpdate: marketData.lastUpdate
+      } : cached.marketData
     })
   })
   
@@ -183,8 +202,8 @@ if (priceCache.size === 0) {
 }
 
 // Update prices every 2 seconds and broadcast to connected clients
-setInterval(() => {
-  updateAllPrices()
+setInterval(async () => {
+  await updateAllPrices()
   broadcastUpdates()
 }, 2000)
 
@@ -215,12 +234,12 @@ export async function GET() {
   
   // Ensure cache is initialized
   if (priceCache.size === 0) {
-    initializePriceCache()
+    await initializePriceCache()
   }
   
   // Update prices if it's been more than 2 seconds
   if (now - lastUpdate > 2000) {
-    updateAllPrices()
+    await updateAllPrices()
   }
   
   // Convert cache to array format
@@ -233,6 +252,13 @@ export async function GET() {
     prices,
     lastUpdate: new Date(lastUpdate).toISOString(),
     totalInstruments: prices.length,
-    updateFrequency: '2 seconds'
+    updateFrequency: '2 seconds',
+    marketData: marketData ? {
+      treasuryRates: marketData.treasuryRates,
+      exchangeRates: marketData.exchangeRates,
+      lastMarketUpdate: marketData.lastUpdate,
+      dataSource: marketData.treasuryRates.source
+    } : null,
+    pricingSource: 'real-time market data with realistic simulation'
   })
 }
