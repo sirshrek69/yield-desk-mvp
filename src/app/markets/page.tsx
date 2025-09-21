@@ -19,15 +19,35 @@ interface Product {
     asOf?: string;
     scope?: string;
   } | null
-  couponType: string
-  couponRatePct: number
-  couponFrequency: string
-  maturityDate: string
+  couponType?: string
+  couponRatePct?: number
+  couponFrequency?: string
+  maturityDate?: string
   priceClean: number
-  ytmPct: number
+  ytmPct?: number
   change24h?: number
   minInvestment: number
   increment: number
+  // Equities and ETF specific fields
+  ticker?: string
+  sector?: string
+  marketCap?: number
+  dividendYield?: number
+  peRatio?: number
+  beta?: number
+  volume?: number
+  avgVolume?: number
+  high52Week?: number
+  low52Week?: number
+  eps?: number
+  revenue?: number
+  netIncome?: number
+  assetsUnderManagement?: number
+  expenseRatio?: number
+  inceptionDate?: string
+  fundType?: string
+  holdings?: number
+  topHoldings?: string[]
   // New minimum investment fields
   faceCurrency: string
   issuerMinFace: number | null
@@ -64,6 +84,7 @@ interface Filters {
   maturitySort: string
   raiseSizeSort: string
   minCommitmentSort: string
+  sector: string
 }
 
 interface PrimaryDeal {
@@ -120,7 +141,8 @@ export default function MarketsPage() {
     ytmSort: 'None',
     maturitySort: 'None',
     raiseSizeSort: 'None',
-    minCommitmentSort: 'None'
+    minCommitmentSort: 'None',
+    sector: 'All'
   })
 
   // Real-time pricing hook
@@ -157,7 +179,388 @@ export default function MarketsPage() {
     fetch('/api/products')
       .then(res => res.json())
       .then(data => {
-        setProducts(data.products)
+        // Add equities and ETF data to the products
+        const equitiesAndETFs = [
+          // Equities
+          {
+            id: 'AAPL',
+            category: 'Equities',
+            name: 'Apple Inc.',
+            issuer: 'Apple Inc.',
+            ticker: 'AAPL',
+            sector: 'Technology',
+            currency: 'USD',
+            priceClean: 175.43,
+            change24h: 1.25,
+            minInvestment: 100,
+            increment: 1,
+            faceCurrency: 'USD',
+            issuerMinFace: null,
+            faceIncrement: null,
+            countryCode: 'US',
+            minInvestmentDisplay: {
+              type: 'platform',
+              platformMinUSD: 100
+            },
+            marketCap: 2800000000000,
+            dividendYield: 0.44,
+            peRatio: 28.5,
+            beta: 1.2,
+            volume: 45000000,
+            avgVolume: 52000000,
+            high52Week: 198.23,
+            low52Week: 124.17,
+            eps: 6.15,
+            revenue: 394328000000,
+            netIncome: 99803000000,
+            raise: {
+              status: 'active',
+              softCap: 0,
+              hardCap: 0,
+              amountCommitted: 0,
+              start: '2024-01-01',
+              end: '2024-12-31'
+            }
+          },
+          {
+            id: 'MSFT',
+            category: 'Equities',
+            name: 'Microsoft Corporation',
+            issuer: 'Microsoft Corporation',
+            ticker: 'MSFT',
+            sector: 'Technology',
+            currency: 'USD',
+            priceClean: 378.85,
+            change24h: -0.85,
+            minInvestment: 100,
+            increment: 1,
+            faceCurrency: 'USD',
+            issuerMinFace: null,
+            faceIncrement: null,
+            countryCode: 'US',
+            minInvestmentDisplay: {
+              type: 'platform',
+              platformMinUSD: 100
+            },
+            marketCap: 2810000000000,
+            dividendYield: 0.68,
+            peRatio: 32.1,
+            beta: 0.9,
+            volume: 28000000,
+            avgVolume: 35000000,
+            high52Week: 384.30,
+            low52Week: 309.45,
+            eps: 11.81,
+            revenue: 211915000000,
+            netIncome: 83383000000,
+            raise: {
+              status: 'active',
+              softCap: 0,
+              hardCap: 0,
+              amountCommitted: 0,
+              start: '2024-01-01',
+              end: '2024-12-31'
+            }
+          },
+          {
+            id: 'TSLA',
+            category: 'Equities',
+            name: 'Tesla, Inc.',
+            issuer: 'Tesla, Inc.',
+            ticker: 'TSLA',
+            sector: 'Automotive',
+            currency: 'USD',
+            priceClean: 248.50,
+            change24h: 3.2,
+            minInvestment: 100,
+            increment: 1,
+            faceCurrency: 'USD',
+            issuerMinFace: null,
+            faceIncrement: null,
+            countryCode: 'US',
+            minInvestmentDisplay: {
+              type: 'platform',
+              platformMinUSD: 100
+            },
+            marketCap: 790000000000,
+            dividendYield: 0,
+            peRatio: 65.2,
+            beta: 2.1,
+            volume: 85000000,
+            avgVolume: 95000000,
+            high52Week: 299.29,
+            low52Week: 138.80,
+            eps: 3.81,
+            revenue: 96773000000,
+            netIncome: 15000000000,
+            raise: {
+              status: 'active',
+              softCap: 0,
+              hardCap: 0,
+              amountCommitted: 0,
+              start: '2024-01-01',
+              end: '2024-12-31'
+            }
+          },
+          {
+            id: 'NVDA',
+            category: 'Equities',
+            name: 'NVIDIA Corporation',
+            issuer: 'NVIDIA Corporation',
+            ticker: 'NVDA',
+            sector: 'Technology',
+            currency: 'USD',
+            priceClean: 875.28,
+            change24h: 2.1,
+            minInvestment: 100,
+            increment: 1,
+            faceCurrency: 'USD',
+            issuerMinFace: null,
+            faceIncrement: null,
+            countryCode: 'US',
+            minInvestmentDisplay: {
+              type: 'platform',
+              platformMinUSD: 100
+            },
+            marketCap: 2150000000000,
+            dividendYield: 0.03,
+            peRatio: 65.8,
+            beta: 1.6,
+            volume: 42000000,
+            avgVolume: 48000000,
+            high52Week: 974.00,
+            low52Week: 378.80,
+            eps: 13.30,
+            revenue: 60922000000,
+            netIncome: 29760000000,
+            raise: {
+              status: 'active',
+              softCap: 0,
+              hardCap: 0,
+              amountCommitted: 0,
+              start: '2024-01-01',
+              end: '2024-12-31'
+            }
+          },
+          {
+            id: 'GOOGL',
+            category: 'Equities',
+            name: 'Alphabet Inc. Class A',
+            issuer: 'Alphabet Inc.',
+            ticker: 'GOOGL',
+            sector: 'Technology',
+            currency: 'USD',
+            priceClean: 142.56,
+            change24h: 0.8,
+            minInvestment: 100,
+            increment: 1,
+            faceCurrency: 'USD',
+            issuerMinFace: null,
+            faceIncrement: null,
+            countryCode: 'US',
+            minInvestmentDisplay: {
+              type: 'platform',
+              platformMinUSD: 100
+            },
+            marketCap: 1780000000000,
+            dividendYield: 0,
+            peRatio: 25.4,
+            beta: 1.1,
+            volume: 25000000,
+            avgVolume: 30000000,
+            high52Week: 151.55,
+            low52Week: 115.55,
+            eps: 5.61,
+            revenue: 307394000000,
+            netIncome: 73795000000,
+            raise: {
+              status: 'active',
+              softCap: 0,
+              hardCap: 0,
+              amountCommitted: 0,
+              start: '2024-01-01',
+              end: '2024-12-31'
+            }
+          },
+          // ETFs
+          {
+            id: 'SPY',
+            category: 'ETFs',
+            name: 'SPDR S&P 500 ETF Trust',
+            issuer: 'State Street Global Advisors',
+            ticker: 'SPY',
+            sector: 'Broad Market',
+            currency: 'USD',
+            priceClean: 445.67,
+            change24h: 0.45,
+            minInvestment: 100,
+            increment: 1,
+            faceCurrency: 'USD',
+            issuerMinFace: null,
+            faceIncrement: null,
+            countryCode: 'US',
+            minInvestmentDisplay: {
+              type: 'platform',
+              platformMinUSD: 100
+            },
+            assetsUnderManagement: 400000000000,
+            expenseRatio: 0.0945,
+            inceptionDate: '1993-01-22',
+            fundType: 'Equity',
+            holdings: 503,
+            topHoldings: ['Apple Inc.', 'Microsoft Corporation', 'Amazon.com Inc.', 'NVIDIA Corporation', 'Alphabet Inc.'],
+            raise: {
+              status: 'active',
+              softCap: 0,
+              hardCap: 0,
+              amountCommitted: 0,
+              start: '2024-01-01',
+              end: '2024-12-31'
+            }
+          },
+          {
+            id: 'QQQ',
+            category: 'ETFs',
+            name: 'Invesco QQQ Trust',
+            issuer: 'Invesco',
+            ticker: 'QQQ',
+            sector: 'Technology',
+            currency: 'USD',
+            priceClean: 378.92,
+            change24h: 1.2,
+            minInvestment: 100,
+            increment: 1,
+            faceCurrency: 'USD',
+            issuerMinFace: null,
+            faceIncrement: null,
+            countryCode: 'US',
+            minInvestmentDisplay: {
+              type: 'platform',
+              platformMinUSD: 100
+            },
+            assetsUnderManagement: 200000000000,
+            expenseRatio: 0.20,
+            inceptionDate: '1999-03-10',
+            fundType: 'Equity',
+            holdings: 101,
+            topHoldings: ['Apple Inc.', 'Microsoft Corporation', 'Amazon.com Inc.', 'NVIDIA Corporation', 'Meta Platforms Inc.'],
+            raise: {
+              status: 'active',
+              softCap: 0,
+              hardCap: 0,
+              amountCommitted: 0,
+              start: '2024-01-01',
+              end: '2024-12-31'
+            }
+          },
+          {
+            id: 'VTI',
+            category: 'ETFs',
+            name: 'Vanguard Total Stock Market ETF',
+            issuer: 'Vanguard',
+            ticker: 'VTI',
+            sector: 'Broad Market',
+            currency: 'USD',
+            priceClean: 234.15,
+            change24h: 0.3,
+            minInvestment: 100,
+            increment: 1,
+            faceCurrency: 'USD',
+            issuerMinFace: null,
+            faceIncrement: null,
+            countryCode: 'US',
+            minInvestmentDisplay: {
+              type: 'platform',
+              platformMinUSD: 100
+            },
+            assetsUnderManagement: 300000000000,
+            expenseRatio: 0.03,
+            inceptionDate: '2001-05-31',
+            fundType: 'Equity',
+            holdings: 3750,
+            topHoldings: ['Apple Inc.', 'Microsoft Corporation', 'Amazon.com Inc.', 'NVIDIA Corporation', 'Alphabet Inc.'],
+            raise: {
+              status: 'active',
+              softCap: 0,
+              hardCap: 0,
+              amountCommitted: 0,
+              start: '2024-01-01',
+              end: '2024-12-31'
+            }
+          },
+          {
+            id: 'ARKK',
+            category: 'ETFs',
+            name: 'ARK Innovation ETF',
+            issuer: 'ARK Investment Management',
+            ticker: 'ARKK',
+            sector: 'Innovation',
+            currency: 'USD',
+            priceClean: 45.23,
+            change24h: 2.8,
+            minInvestment: 100,
+            increment: 1,
+            faceCurrency: 'USD',
+            issuerMinFace: null,
+            faceIncrement: null,
+            countryCode: 'US',
+            minInvestmentDisplay: {
+              type: 'platform',
+              platformMinUSD: 100
+            },
+            assetsUnderManagement: 8000000000,
+            expenseRatio: 0.75,
+            inceptionDate: '2014-10-31',
+            fundType: 'Equity',
+            holdings: 35,
+            topHoldings: ['Tesla Inc.', 'Coinbase Global Inc.', 'Roku Inc.', 'Zoom Video Communications Inc.', 'Block Inc.'],
+            raise: {
+              status: 'active',
+              softCap: 0,
+              hardCap: 0,
+              amountCommitted: 0,
+              start: '2024-01-01',
+              end: '2024-12-31'
+            }
+          },
+          {
+            id: 'VEA',
+            category: 'ETFs',
+            name: 'Vanguard FTSE Developed Markets ETF',
+            issuer: 'Vanguard',
+            ticker: 'VEA',
+            sector: 'International',
+            currency: 'USD',
+            priceClean: 48.92,
+            change24h: -0.2,
+            minInvestment: 100,
+            increment: 1,
+            faceCurrency: 'USD',
+            issuerMinFace: null,
+            faceIncrement: null,
+            countryCode: 'US',
+            minInvestmentDisplay: {
+              type: 'platform',
+              platformMinUSD: 100
+            },
+            assetsUnderManagement: 120000000000,
+            expenseRatio: 0.05,
+            inceptionDate: '2007-07-20',
+            fundType: 'Equity',
+            holdings: 4000,
+            topHoldings: ['Nestle SA', 'ASML Holding NV', 'Novo Nordisk A/S', 'SAP SE', 'LVMH Moet Hennessy Louis Vuitton SE'],
+            raise: {
+              status: 'active',
+              softCap: 0,
+              hardCap: 0,
+              amountCommitted: 0,
+              start: '2024-01-01',
+              end: '2024-12-31'
+            }
+          }
+        ]
+        
+        setProducts([...data.products, ...equitiesAndETFs])
       })
       .catch(err => {
         console.error('Failed to fetch products:', err)
@@ -188,7 +591,7 @@ export default function MarketsPage() {
     }
   }, [])
 
-  const categories = ['All', ...Array.from(new Set(products.map(p => p.category))), 'Primary Corporate Issuance']
+  const categories = ['All', ...Array.from(new Set(products.map(p => p.category))), 'Equities', 'ETFs', 'Primary Corporate Issuance']
   
   const applyFilters = (productList: Product[]) => {
     return productList.filter(product => {
@@ -207,6 +610,11 @@ export default function MarketsPage() {
       
       // Tenor filter
       if (filters.tenor !== 'All' && product.tenor !== filters.tenor) {
+        return false
+      }
+      
+      // Sector filter for Equities and ETFs
+      if (filters.sector !== 'All' && product.sector !== filters.sector) {
         return false
       }
       
@@ -623,6 +1031,28 @@ export default function MarketsPage() {
               </select>
             </div>
 
+            {/* Sector Filter */}
+            <div>
+              <label className="text-sm font-medium mb-2 block">Sector</label>
+              <select
+                value={filters.sector}
+                onChange={(e) => setFilters(prev => ({ ...prev, sector: e.target.value }))}
+                className="w-full px-3 py-2 rounded-md border border-input bg-background text-sm"
+              >
+                <option value="All">All Sectors</option>
+                <option value="Technology">Technology</option>
+                <option value="Automotive">Automotive</option>
+                <option value="Broad Market">Broad Market</option>
+                <option value="Innovation">Innovation</option>
+                <option value="International">International</option>
+                <option value="Healthcare">Healthcare</option>
+                <option value="Financial">Financial</option>
+                <option value="Energy">Energy</option>
+                <option value="Consumer">Consumer</option>
+                <option value="Industrial">Industrial</option>
+              </select>
+            </div>
+
             {/* YTM Sort */}
             <div>
               <label className="text-sm font-medium mb-2 block">YTM Yield</label>
@@ -690,7 +1120,8 @@ export default function MarketsPage() {
                 ytmSort: 'None',
                 maturitySort: 'None',
                 raiseSizeSort: 'None',
-                minCommitmentSort: 'None'
+                minCommitmentSort: 'None',
+                sector: 'All'
               })}
               className="px-4 py-2 text-sm border border-input bg-background hover:bg-accent hover:text-accent-foreground rounded-md transition-colors w-full md:w-auto"
             >
@@ -965,6 +1396,11 @@ export default function MarketsPage() {
                                   {product.issuerTicker.charAt(0)}
                                 </div>
                               )}
+                              {(product.category === 'Equities' || product.category === 'ETFs') && product.ticker && (
+                                <div className="px-2 py-1 bg-blue-100 text-blue-800 rounded text-xs font-bold">
+                                  {product.ticker}
+                                </div>
+                              )}
                             </div>
                           </div>
                         </div>
@@ -972,10 +1408,15 @@ export default function MarketsPage() {
                         {/* Key Metrics */}
                         <div className="space-y-3 mb-4 flex-grow">
                           <div className="flex items-center justify-between h-8">
-                            <span className="text-sm text-muted-foreground">YTM</span>
+                            <span className="text-sm text-muted-foreground">
+                              {product.category === 'Equities' ? 'Price' : 
+                               product.category === 'ETFs' ? 'Price' : 'YTM'}
+                            </span>
                             <div className="text-right">
                               <span className="font-semibold text-brand-accent text-sm">
-                                {formatPercentage(product.ytmPct)}
+                                {product.category === 'Equities' || product.category === 'ETFs' 
+                                  ? `$${product.priceClean.toFixed(2)}`
+                                  : formatPercentage(product.ytmPct)}
                               </span>
                               {product.change24h !== undefined && (
                                 <div className={`text-xs ${product.change24h >= 0 ? 'text-green-600' : 'text-red-600'}`}>
@@ -985,9 +1426,20 @@ export default function MarketsPage() {
                             </div>
                           </div>
                           <div className="flex items-center justify-between h-8">
-                            <span className="text-sm text-muted-foreground">Rating</span>
+                            <span className="text-sm text-muted-foreground">
+                              {product.category === 'Equities' ? 'Sector' : 
+                               product.category === 'ETFs' ? 'Expense Ratio' : 'Rating'}
+                            </span>
                             <div className="flex items-center">
-                              {product.rating ? (
+                              {product.category === 'Equities' ? (
+                                <span className="text-sm font-medium text-brand-accent">
+                                  {product.sector}
+                                </span>
+                              ) : product.category === 'ETFs' ? (
+                                <span className="text-sm font-medium text-brand-accent">
+                                  {product.expenseRatio?.toFixed(2)}%
+                                </span>
+                              ) : product.rating ? (
                                 <span 
                                   className={`px-2 py-1 rounded-full text-xs font-medium ${getRatingColor(product.rating.composite)}`}
                                   title={`Moody's: ${product.rating.moodys || 'N/A'}\nS&P: ${product.rating.sp || 'N/A'}\nFitch: ${product.rating.fitch || 'N/A'}\nAs of: ${product.rating.asOf}`}
@@ -1000,18 +1452,40 @@ export default function MarketsPage() {
                             </div>
                           </div>
                           <div className="flex items-center justify-between h-8">
-                            <span className="text-sm text-muted-foreground">Maturity</span>
-                            <span className="font-medium text-sm">{formatDate(product.maturityDate)}</span>
+                            <span className="text-sm text-muted-foreground">
+                              {product.category === 'Equities' ? 'Market Cap' : 
+                               product.category === 'ETFs' ? 'AUM' : 'Maturity'}
+                            </span>
+                            <span className="font-medium text-sm">
+                              {product.category === 'Equities' ? (
+                                product.marketCap ? `$${(product.marketCap / 1000000000).toFixed(1)}B` : 'N/A'
+                              ) : product.category === 'ETFs' ? (
+                                product.assetsUnderManagement ? `$${(product.assetsUnderManagement / 1000000000).toFixed(1)}B` : 'N/A'
+                              ) : (
+                                formatDate(product.maturityDate)
+                              )}
+                            </span>
                           </div>
                           <div className="flex items-center justify-between h-8">
-                            <span className="text-sm text-muted-foreground">Price</span>
+                            <span className="text-sm text-muted-foreground">
+                              {product.category === 'Equities' ? 'P/E Ratio' : 
+                               product.category === 'ETFs' ? 'Holdings' : 'Price'}
+                            </span>
                             <div className="text-right">
                               <div className="font-medium text-sm">
-                                {formatPriceDisplay(product.priceClean, product.currency).usd}
+                                {product.category === 'Equities' ? (
+                                  product.peRatio ? product.peRatio.toFixed(1) : 'N/A'
+                                ) : product.category === 'ETFs' ? (
+                                  product.holdings ? `${product.holdings}` : 'N/A'
+                                ) : (
+                                  formatPriceDisplay(product.priceClean, product.currency).usd
+                                )}
                               </div>
-                              <div className="text-xs text-muted-foreground">
-                                ({formatPriceDisplay(product.priceClean, product.currency).local})
-                              </div>
+                              {product.category !== 'Equities' && product.category !== 'ETFs' && (
+                                <div className="text-xs text-muted-foreground">
+                                  ({formatPriceDisplay(product.priceClean, product.currency).local})
+                                </div>
+                              )}
                             </div>
                           </div>
                           <div className="flex items-center justify-between h-8">
@@ -1079,29 +1553,103 @@ export default function MarketsPage() {
             <div className="p-6 space-y-6">
               {/* Product Details */}
               <div className="grid grid-cols-2 gap-4 text-sm">
-                <div>
-                  <span className="text-muted-foreground">Rating:</span>
-                  <div className="font-medium">{selectedProduct.rating?.sp || 'N/A'}</div>
-                </div>
-                <div>
-                  <span className="text-muted-foreground">Coupon:</span>
-                  <div className="font-medium">
-                    {selectedProduct.couponType === 'Discount' 
-                      ? 'Discount' 
-                      : `${formatPercentage(selectedProduct.couponRatePct)} ${selectedProduct.couponFrequency}`
-                    }
-                  </div>
-                </div>
-                <div>
-                  <span className="text-muted-foreground">Maturity:</span>
-                  <div className="font-medium">{formatDate(selectedProduct.maturityDate)}</div>
-                </div>
-                <div>
-                  <span className="text-muted-foreground">YTM:</span>
-                  <div className="font-medium text-brand-accent">
-                    {formatPercentage(selectedProduct.ytmPct)}
-                  </div>
-                </div>
+                {selectedProduct.category === 'Equities' ? (
+                  <>
+                    <div>
+                      <span className="text-muted-foreground">Ticker:</span>
+                      <div className="font-medium">{selectedProduct.ticker}</div>
+                    </div>
+                    <div>
+                      <span className="text-muted-foreground">Sector:</span>
+                      <div className="font-medium">{selectedProduct.sector}</div>
+                    </div>
+                    <div>
+                      <span className="text-muted-foreground">Market Cap:</span>
+                      <div className="font-medium">
+                        {selectedProduct.marketCap ? `$${(selectedProduct.marketCap / 1000000000).toFixed(1)}B` : 'N/A'}
+                      </div>
+                    </div>
+                    <div>
+                      <span className="text-muted-foreground">P/E Ratio:</span>
+                      <div className="font-medium text-brand-accent">
+                        {selectedProduct.peRatio ? selectedProduct.peRatio.toFixed(1) : 'N/A'}
+                      </div>
+                    </div>
+                    <div>
+                      <span className="text-muted-foreground">Dividend Yield:</span>
+                      <div className="font-medium">
+                        {selectedProduct.dividendYield ? `${selectedProduct.dividendYield.toFixed(2)}%` : 'N/A'}
+                      </div>
+                    </div>
+                    <div>
+                      <span className="text-muted-foreground">Beta:</span>
+                      <div className="font-medium">
+                        {selectedProduct.beta ? selectedProduct.beta.toFixed(2) : 'N/A'}
+                      </div>
+                    </div>
+                  </>
+                ) : selectedProduct.category === 'ETFs' ? (
+                  <>
+                    <div>
+                      <span className="text-muted-foreground">Ticker:</span>
+                      <div className="font-medium">{selectedProduct.ticker}</div>
+                    </div>
+                    <div>
+                      <span className="text-muted-foreground">Sector:</span>
+                      <div className="font-medium">{selectedProduct.sector}</div>
+                    </div>
+                    <div>
+                      <span className="text-muted-foreground">AUM:</span>
+                      <div className="font-medium">
+                        {selectedProduct.assetsUnderManagement ? `$${(selectedProduct.assetsUnderManagement / 1000000000).toFixed(1)}B` : 'N/A'}
+                      </div>
+                    </div>
+                    <div>
+                      <span className="text-muted-foreground">Expense Ratio:</span>
+                      <div className="font-medium text-brand-accent">
+                        {selectedProduct.expenseRatio ? `${selectedProduct.expenseRatio.toFixed(2)}%` : 'N/A'}
+                      </div>
+                    </div>
+                    <div>
+                      <span className="text-muted-foreground">Holdings:</span>
+                      <div className="font-medium">
+                        {selectedProduct.holdings ? `${selectedProduct.holdings}` : 'N/A'}
+                      </div>
+                    </div>
+                    <div>
+                      <span className="text-muted-foreground">Inception:</span>
+                      <div className="font-medium">
+                        {selectedProduct.inceptionDate ? formatDate(selectedProduct.inceptionDate) : 'N/A'}
+                      </div>
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <div>
+                      <span className="text-muted-foreground">Rating:</span>
+                      <div className="font-medium">{selectedProduct.rating?.sp || 'N/A'}</div>
+                    </div>
+                    <div>
+                      <span className="text-muted-foreground">Coupon:</span>
+                      <div className="font-medium">
+                        {selectedProduct.couponType === 'Discount' 
+                          ? 'Discount' 
+                          : `${formatPercentage(selectedProduct.couponRatePct)} ${selectedProduct.couponFrequency}`
+                        }
+                      </div>
+                    </div>
+                    <div>
+                      <span className="text-muted-foreground">Maturity:</span>
+                      <div className="font-medium">{formatDate(selectedProduct.maturityDate)}</div>
+                    </div>
+                    <div>
+                      <span className="text-muted-foreground">YTM:</span>
+                      <div className="font-medium text-brand-accent">
+                        {formatPercentage(selectedProduct.ytmPct)}
+                      </div>
+                    </div>
+                  </>
+                )}
                 <div>
                   <span className="text-muted-foreground">Price:</span>
                   <div className="font-medium">
@@ -1128,6 +1676,20 @@ export default function MarketsPage() {
                   currentYTM={selectedProduct.ytmPct}
                 />
               </div>
+
+              {/* ETF Top Holdings */}
+              {selectedProduct.category === 'ETFs' && selectedProduct.topHoldings && (
+                <div className="border-t border-border pt-6">
+                  <div className="text-sm font-medium mb-3">Top Holdings</div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                    {selectedProduct.topHoldings.slice(0, 6).map((holding, index) => (
+                      <div key={index} className="text-sm text-muted-foreground">
+                        {index + 1}. {holding}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
 
               {/* Investment Limits */}
               <div className="space-y-2">
@@ -1192,7 +1754,12 @@ export default function MarketsPage() {
                         : 'bg-brand-primary text-white hover:bg-brand-primary/90'
                     }`}
                   >
-                    {walletBalance < selectedProduct.minInvestment ? 'Insufficient Balance' : 'Commit Funds'}
+                    {walletBalance < selectedProduct.minInvestment 
+                      ? 'Insufficient Balance' 
+                      : selectedProduct.category === 'Equities' || selectedProduct.category === 'ETFs'
+                        ? 'Buy Shares'
+                        : 'Commit Funds'
+                    }
                   </button>
                 </div>
               </div>
