@@ -84,7 +84,6 @@ interface Filters {
   maturitySort: string
   raiseSizeSort: string
   minCommitmentSort: string
-  sector: string
 }
 
 interface PrimaryDeal {
@@ -141,8 +140,7 @@ export default function MarketsPage() {
     ytmSort: 'None',
     maturitySort: 'None',
     raiseSizeSort: 'None',
-    minCommitmentSort: 'None',
-    sector: 'All'
+    minCommitmentSort: 'None'
   })
 
   // Real-time pricing hook
@@ -192,7 +190,7 @@ export default function MarketsPage() {
             currency: 'USD',
             priceClean: 175.43,
             change24h: 1.25,
-            minInvestment: 100,
+            minInvestment: 1,
             increment: 1,
             faceCurrency: 'USD',
             issuerMinFace: null,
@@ -200,7 +198,7 @@ export default function MarketsPage() {
             countryCode: 'US',
             minInvestmentDisplay: {
               type: 'platform',
-              platformMinUSD: 100
+              platformMinUSD: 1
             },
             marketCap: 2800000000000,
             dividendYield: 0.44,
@@ -232,7 +230,7 @@ export default function MarketsPage() {
             currency: 'USD',
             priceClean: 378.85,
             change24h: -0.85,
-            minInvestment: 100,
+            minInvestment: 1,
             increment: 1,
             faceCurrency: 'USD',
             issuerMinFace: null,
@@ -240,7 +238,7 @@ export default function MarketsPage() {
             countryCode: 'US',
             minInvestmentDisplay: {
               type: 'platform',
-              platformMinUSD: 100
+              platformMinUSD: 1
             },
             marketCap: 2810000000000,
             dividendYield: 0.68,
@@ -272,7 +270,7 @@ export default function MarketsPage() {
             currency: 'USD',
             priceClean: 248.50,
             change24h: 3.2,
-            minInvestment: 100,
+            minInvestment: 1,
             increment: 1,
             faceCurrency: 'USD',
             issuerMinFace: null,
@@ -280,7 +278,7 @@ export default function MarketsPage() {
             countryCode: 'US',
             minInvestmentDisplay: {
               type: 'platform',
-              platformMinUSD: 100
+              platformMinUSD: 1
             },
             marketCap: 790000000000,
             dividendYield: 0,
@@ -312,7 +310,7 @@ export default function MarketsPage() {
             currency: 'USD',
             priceClean: 875.28,
             change24h: 2.1,
-            minInvestment: 100,
+            minInvestment: 1,
             increment: 1,
             faceCurrency: 'USD',
             issuerMinFace: null,
@@ -320,7 +318,7 @@ export default function MarketsPage() {
             countryCode: 'US',
             minInvestmentDisplay: {
               type: 'platform',
-              platformMinUSD: 100
+              platformMinUSD: 1
             },
             marketCap: 2150000000000,
             dividendYield: 0.03,
@@ -352,7 +350,7 @@ export default function MarketsPage() {
             currency: 'USD',
             priceClean: 142.56,
             change24h: 0.8,
-            minInvestment: 100,
+            minInvestment: 1,
             increment: 1,
             faceCurrency: 'USD',
             issuerMinFace: null,
@@ -360,7 +358,7 @@ export default function MarketsPage() {
             countryCode: 'US',
             minInvestmentDisplay: {
               type: 'platform',
-              platformMinUSD: 100
+              platformMinUSD: 1
             },
             marketCap: 1780000000000,
             dividendYield: 0,
@@ -393,7 +391,7 @@ export default function MarketsPage() {
             currency: 'USD',
             priceClean: 445.67,
             change24h: 0.45,
-            minInvestment: 100,
+            minInvestment: 1,
             increment: 1,
             faceCurrency: 'USD',
             issuerMinFace: null,
@@ -401,7 +399,7 @@ export default function MarketsPage() {
             countryCode: 'US',
             minInvestmentDisplay: {
               type: 'platform',
-              platformMinUSD: 100
+              platformMinUSD: 1
             },
             assetsUnderManagement: 400000000000,
             expenseRatio: 0.0945,
@@ -428,7 +426,7 @@ export default function MarketsPage() {
             currency: 'USD',
             priceClean: 378.92,
             change24h: 1.2,
-            minInvestment: 100,
+            minInvestment: 1,
             increment: 1,
             faceCurrency: 'USD',
             issuerMinFace: null,
@@ -436,7 +434,7 @@ export default function MarketsPage() {
             countryCode: 'US',
             minInvestmentDisplay: {
               type: 'platform',
-              platformMinUSD: 100
+              platformMinUSD: 1
             },
             assetsUnderManagement: 200000000000,
             expenseRatio: 0.20,
@@ -463,7 +461,7 @@ export default function MarketsPage() {
             currency: 'USD',
             priceClean: 234.15,
             change24h: 0.3,
-            minInvestment: 100,
+            minInvestment: 1,
             increment: 1,
             faceCurrency: 'USD',
             issuerMinFace: null,
@@ -471,7 +469,7 @@ export default function MarketsPage() {
             countryCode: 'US',
             minInvestmentDisplay: {
               type: 'platform',
-              platformMinUSD: 100
+              platformMinUSD: 1
             },
             assetsUnderManagement: 300000000000,
             expenseRatio: 0.03,
@@ -498,7 +496,7 @@ export default function MarketsPage() {
             currency: 'USD',
             priceClean: 45.23,
             change24h: 2.8,
-            minInvestment: 100,
+            minInvestment: 1,
             increment: 1,
             faceCurrency: 'USD',
             issuerMinFace: null,
@@ -506,7 +504,7 @@ export default function MarketsPage() {
             countryCode: 'US',
             minInvestmentDisplay: {
               type: 'platform',
-              platformMinUSD: 100
+              platformMinUSD: 1
             },
             assetsUnderManagement: 8000000000,
             expenseRatio: 0.75,
@@ -533,7 +531,7 @@ export default function MarketsPage() {
             currency: 'USD',
             priceClean: 48.92,
             change24h: -0.2,
-            minInvestment: 100,
+            minInvestment: 1,
             increment: 1,
             faceCurrency: 'USD',
             issuerMinFace: null,
@@ -541,7 +539,7 @@ export default function MarketsPage() {
             countryCode: 'US',
             minInvestmentDisplay: {
               type: 'platform',
-              platformMinUSD: 100
+              platformMinUSD: 1
             },
             assetsUnderManagement: 120000000000,
             expenseRatio: 0.05,
@@ -549,6 +547,648 @@ export default function MarketsPage() {
             fundType: 'Equity',
             holdings: 4000,
             topHoldings: ['Nestle SA', 'ASML Holding NV', 'Novo Nordisk A/S', 'SAP SE', 'LVMH Moet Hennessy Louis Vuitton SE'],
+            raise: {
+              status: 'active',
+              softCap: 0,
+              hardCap: 0,
+              amountCommitted: 0,
+              start: '2024-01-01',
+              end: '2024-12-31'
+            }
+          },
+          // Additional Equities
+          {
+            id: 'AMZN',
+            category: 'Equities',
+            name: 'Amazon.com Inc.',
+            issuer: 'Amazon.com Inc.',
+            ticker: 'AMZN',
+            sector: 'Technology',
+            currency: 'USD',
+            priceClean: 155.89,
+            change24h: 2.1,
+            minInvestment: 1,
+            increment: 1,
+            faceCurrency: 'USD',
+            issuerMinFace: null,
+            faceIncrement: null,
+            countryCode: 'US',
+            minInvestmentDisplay: {
+              type: 'platform',
+              platformMinUSD: 1
+            },
+            marketCap: 1620000000000,
+            dividendYield: 0,
+            peRatio: 52.3,
+            beta: 1.3,
+            volume: 35000000,
+            avgVolume: 40000000,
+            high52Week: 189.77,
+            low52Week: 101.15,
+            eps: 2.98,
+            revenue: 574785000000,
+            netIncome: 30425000000,
+            raise: {
+              status: 'active',
+              softCap: 0,
+              hardCap: 0,
+              amountCommitted: 0,
+              start: '2024-01-01',
+              end: '2024-12-31'
+            }
+          },
+          {
+            id: 'META',
+            category: 'Equities',
+            name: 'Meta Platforms Inc.',
+            issuer: 'Meta Platforms Inc.',
+            ticker: 'META',
+            sector: 'Technology',
+            currency: 'USD',
+            priceClean: 485.12,
+            change24h: 3.4,
+            minInvestment: 1,
+            increment: 1,
+            faceCurrency: 'USD',
+            issuerMinFace: null,
+            faceIncrement: null,
+            countryCode: 'US',
+            minInvestmentDisplay: {
+              type: 'platform',
+              platformMinUSD: 1
+            },
+            marketCap: 1230000000000,
+            dividendYield: 0,
+            peRatio: 24.8,
+            beta: 1.4,
+            volume: 18000000,
+            avgVolume: 22000000,
+            high52Week: 531.49,
+            low52Week: 197.16,
+            eps: 19.56,
+            revenue: 134902000000,
+            netIncome: 39098000000,
+            raise: {
+              status: 'active',
+              softCap: 0,
+              hardCap: 0,
+              amountCommitted: 0,
+              start: '2024-01-01',
+              end: '2024-12-31'
+            }
+          },
+          {
+            id: 'BRK.B',
+            category: 'Equities',
+            name: 'Berkshire Hathaway Inc. Class B',
+            issuer: 'Berkshire Hathaway Inc.',
+            ticker: 'BRK.B',
+            sector: 'Financial',
+            currency: 'USD',
+            priceClean: 412.85,
+            change24h: 0.3,
+            minInvestment: 1,
+            increment: 1,
+            faceCurrency: 'USD',
+            issuerMinFace: null,
+            faceIncrement: null,
+            countryCode: 'US',
+            minInvestmentDisplay: {
+              type: 'platform',
+              platformMinUSD: 1
+            },
+            marketCap: 900000000000,
+            dividendYield: 0,
+            peRatio: 22.1,
+            beta: 0.9,
+            volume: 3500000,
+            avgVolume: 4000000,
+            high52Week: 435.00,
+            low52Week: 320.00,
+            eps: 18.68,
+            revenue: 364482000000,
+            netIncome: 96223000000,
+            raise: {
+              status: 'active',
+              softCap: 0,
+              hardCap: 0,
+              amountCommitted: 0,
+              start: '2024-01-01',
+              end: '2024-12-31'
+            }
+          },
+          {
+            id: 'JPM',
+            category: 'Equities',
+            name: 'JPMorgan Chase & Co.',
+            issuer: 'JPMorgan Chase & Co.',
+            ticker: 'JPM',
+            sector: 'Financial',
+            currency: 'USD',
+            priceClean: 198.45,
+            change24h: 1.8,
+            minInvestment: 1,
+            increment: 1,
+            faceCurrency: 'USD',
+            issuerMinFace: null,
+            faceIncrement: null,
+            countryCode: 'US',
+            minInvestmentDisplay: {
+              type: 'platform',
+              platformMinUSD: 1
+            },
+            marketCap: 580000000000,
+            dividendYield: 2.1,
+            peRatio: 12.5,
+            beta: 1.2,
+            volume: 12000000,
+            avgVolume: 15000000,
+            high52Week: 205.88,
+            low52Week: 135.19,
+            eps: 15.88,
+            revenue: 158100000000,
+            netIncome: 49552000000,
+            raise: {
+              status: 'active',
+              softCap: 0,
+              hardCap: 0,
+              amountCommitted: 0,
+              start: '2024-01-01',
+              end: '2024-12-31'
+            }
+          },
+          {
+            id: 'JNJ',
+            category: 'Equities',
+            name: 'Johnson & Johnson',
+            issuer: 'Johnson & Johnson',
+            ticker: 'JNJ',
+            sector: 'Healthcare',
+            currency: 'USD',
+            priceClean: 158.32,
+            change24h: -0.5,
+            minInvestment: 1,
+            increment: 1,
+            faceCurrency: 'USD',
+            issuerMinFace: null,
+            faceIncrement: null,
+            countryCode: 'US',
+            minInvestmentDisplay: {
+              type: 'platform',
+              platformMinUSD: 1
+            },
+            marketCap: 420000000000,
+            dividendYield: 3.2,
+            peRatio: 15.8,
+            beta: 0.6,
+            volume: 8000000,
+            avgVolume: 10000000,
+            high52Week: 175.43,
+            low52Week: 144.50,
+            eps: 10.02,
+            revenue: 94943000000,
+            netIncome: 17810000000,
+            raise: {
+              status: 'active',
+              softCap: 0,
+              hardCap: 0,
+              amountCommitted: 0,
+              start: '2024-01-01',
+              end: '2024-12-31'
+            }
+          },
+          {
+            id: 'V',
+            category: 'Equities',
+            name: 'Visa Inc.',
+            issuer: 'Visa Inc.',
+            ticker: 'V',
+            sector: 'Financial',
+            currency: 'USD',
+            priceClean: 275.89,
+            change24h: 1.2,
+            minInvestment: 1,
+            increment: 1,
+            faceCurrency: 'USD',
+            issuerMinFace: null,
+            faceIncrement: null,
+            countryCode: 'US',
+            minInvestmentDisplay: {
+              type: 'platform',
+              platformMinUSD: 1
+            },
+            marketCap: 580000000000,
+            dividendYield: 0.8,
+            peRatio: 32.1,
+            beta: 0.9,
+            volume: 6000000,
+            avgVolume: 8000000,
+            high52Week: 290.96,
+            low52Week: 201.02,
+            eps: 8.60,
+            revenue: 32300,
+            netIncome: 18000,
+            raise: {
+              status: 'active',
+              softCap: 0,
+              hardCap: 0,
+              amountCommitted: 0,
+              start: '2024-01-01',
+              end: '2024-12-31'
+            }
+          },
+          {
+            id: 'PG',
+            category: 'Equities',
+            name: 'Procter & Gamble Co.',
+            issuer: 'Procter & Gamble Co.',
+            ticker: 'PG',
+            sector: 'Consumer',
+            currency: 'USD',
+            priceClean: 156.78,
+            change24h: 0.4,
+            minInvestment: 1,
+            increment: 1,
+            faceCurrency: 'USD',
+            issuerMinFace: null,
+            faceIncrement: null,
+            countryCode: 'US',
+            minInvestmentDisplay: {
+              type: 'platform',
+              platformMinUSD: 1
+            },
+            marketCap: 370000000000,
+            dividendYield: 2.4,
+            peRatio: 25.2,
+            beta: 0.4,
+            volume: 5000000,
+            avgVolume: 6000000,
+            high52Week: 165.33,
+            low52Week: 140.00,
+            eps: 6.22,
+            revenue: 82006000000,
+            netIncome: 14713000000,
+            raise: {
+              status: 'active',
+              softCap: 0,
+              hardCap: 0,
+              amountCommitted: 0,
+              start: '2024-01-01',
+              end: '2024-12-31'
+            }
+          },
+          {
+            id: 'UNH',
+            category: 'Equities',
+            name: 'UnitedHealth Group Inc.',
+            issuer: 'UnitedHealth Group Inc.',
+            ticker: 'UNH',
+            sector: 'Healthcare',
+            currency: 'USD',
+            priceClean: 485.67,
+            change24h: 2.3,
+            minInvestment: 1,
+            increment: 1,
+            faceCurrency: 'USD',
+            issuerMinFace: null,
+            faceIncrement: null,
+            countryCode: 'US',
+            minInvestmentDisplay: {
+              type: 'platform',
+              platformMinUSD: 1
+            },
+            marketCap: 450000000000,
+            dividendYield: 1.4,
+            peRatio: 24.8,
+            beta: 0.8,
+            volume: 3000000,
+            avgVolume: 4000000,
+            high52Week: 554.70,
+            low52Week: 445.00,
+            eps: 19.58,
+            revenue: 371622000000,
+            netIncome: 22381,
+            raise: {
+              status: 'active',
+              softCap: 0,
+              hardCap: 0,
+              amountCommitted: 0,
+              start: '2024-01-01',
+              end: '2024-12-31'
+            }
+          },
+          {
+            id: 'HD',
+            category: 'Equities',
+            name: 'Home Depot Inc.',
+            issuer: 'Home Depot Inc.',
+            ticker: 'HD',
+            sector: 'Consumer',
+            currency: 'USD',
+            priceClean: 345.89,
+            change24h: 1.1,
+            minInvestment: 1,
+            increment: 1,
+            faceCurrency: 'USD',
+            issuerMinFace: null,
+            faceIncrement: null,
+            countryCode: 'US',
+            minInvestmentDisplay: {
+              type: 'platform',
+              platformMinUSD: 1
+            },
+            marketCap: 350000000000,
+            dividendYield: 2.6,
+            peRatio: 22.4,
+            beta: 1.0,
+            volume: 4000000,
+            avgVolume: 5000000,
+            high52Week: 415.00,
+            low52Week: 280.00,
+            eps: 15.44,
+            revenue: 157403000000,
+            netIncome: 15143000000,
+            raise: {
+              status: 'active',
+              softCap: 0,
+              hardCap: 0,
+              amountCommitted: 0,
+              start: '2024-01-01',
+              end: '2024-12-31'
+            }
+          },
+          // Additional ETFs
+          {
+            id: 'IWM',
+            category: 'ETFs',
+            name: 'iShares Russell 2000 ETF',
+            issuer: 'BlackRock',
+            ticker: 'IWM',
+            sector: 'Small Cap',
+            currency: 'USD',
+            priceClean: 198.45,
+            change24h: 1.8,
+            minInvestment: 1,
+            increment: 1,
+            faceCurrency: 'USD',
+            issuerMinFace: null,
+            faceIncrement: null,
+            countryCode: 'US',
+            minInvestmentDisplay: {
+              type: 'platform',
+              platformMinUSD: 1
+            },
+            assetsUnderManagement: 50000000000,
+            expenseRatio: 0.19,
+            inceptionDate: '2000-05-26',
+            fundType: 'Equity',
+            holdings: 2000,
+            topHoldings: ['Super Micro Computer Inc.', 'Carvana Co.', 'Roku Inc.', 'Palantir Technologies Inc.', 'Plug Power Inc.'],
+            raise: {
+              status: 'active',
+              softCap: 0,
+              hardCap: 0,
+              amountCommitted: 0,
+              start: '2024-01-01',
+              end: '2024-12-31'
+            }
+          },
+          {
+            id: 'EFA',
+            category: 'ETFs',
+            name: 'iShares MSCI EAFE ETF',
+            issuer: 'BlackRock',
+            ticker: 'EFA',
+            sector: 'International',
+            currency: 'USD',
+            priceClean: 78.92,
+            change24h: 0.5,
+            minInvestment: 1,
+            increment: 1,
+            faceCurrency: 'USD',
+            issuerMinFace: null,
+            faceIncrement: null,
+            countryCode: 'US',
+            minInvestmentDisplay: {
+              type: 'platform',
+              platformMinUSD: 1
+            },
+            assetsUnderManagement: 15000000000,
+            expenseRatio: 0.32,
+            inceptionDate: '2001-08-14',
+            fundType: 'Equity',
+            holdings: 900,
+            topHoldings: ['Nestle SA', 'ASML Holding NV', 'Novo Nordisk A/S', 'SAP SE', 'LVMH Moet Hennessy Louis Vuitton SE'],
+            raise: {
+              status: 'active',
+              softCap: 0,
+              hardCap: 0,
+              amountCommitted: 0,
+              start: '2024-01-01',
+              end: '2024-12-31'
+            }
+          },
+          {
+            id: 'GLD',
+            category: 'ETFs',
+            name: 'SPDR Gold Trust',
+            issuer: 'State Street Global Advisors',
+            ticker: 'GLD',
+            sector: 'Commodities',
+            currency: 'USD',
+            priceClean: 185.67,
+            change24h: -0.8,
+            minInvestment: 1,
+            increment: 1,
+            faceCurrency: 'USD',
+            issuerMinFace: null,
+            faceIncrement: null,
+            countryCode: 'US',
+            minInvestmentDisplay: {
+              type: 'platform',
+              platformMinUSD: 1
+            },
+            assetsUnderManagement: 58000000000,
+            expenseRatio: 0.40,
+            inceptionDate: '2004-11-18',
+            fundType: 'Commodity',
+            holdings: 1,
+            topHoldings: ['Gold Bullion'],
+            raise: {
+              status: 'active',
+              softCap: 0,
+              hardCap: 0,
+              amountCommitted: 0,
+              start: '2024-01-01',
+              end: '2024-12-31'
+            }
+          },
+          {
+            id: 'TLT',
+            category: 'ETFs',
+            name: 'iShares 20+ Year Treasury Bond ETF',
+            issuer: 'BlackRock',
+            ticker: 'TLT',
+            sector: 'Fixed Income',
+            currency: 'USD',
+            priceClean: 89.45,
+            change24h: -1.2,
+            minInvestment: 1,
+            increment: 1,
+            faceCurrency: 'USD',
+            issuerMinFace: null,
+            faceIncrement: null,
+            countryCode: 'US',
+            minInvestmentDisplay: {
+              type: 'platform',
+              platformMinUSD: 1
+            },
+            assetsUnderManagement: 18000000000,
+            expenseRatio: 0.15,
+            inceptionDate: '2002-07-22',
+            fundType: 'Fixed Income',
+            holdings: 40,
+            topHoldings: ['US Treasury 20Y', 'US Treasury 30Y', 'US Treasury 25Y', 'US Treasury 22Y', 'US Treasury 21Y'],
+            raise: {
+              status: 'active',
+              softCap: 0,
+              hardCap: 0,
+              amountCommitted: 0,
+              start: '2024-01-01',
+              end: '2024-12-31'
+            }
+          },
+          {
+            id: 'XLF',
+            category: 'ETFs',
+            name: 'Financial Select Sector SPDR Fund',
+            issuer: 'State Street Global Advisors',
+            ticker: 'XLF',
+            sector: 'Financial',
+            currency: 'USD',
+            priceClean: 42.18,
+            change24h: 2.1,
+            minInvestment: 1,
+            increment: 1,
+            faceCurrency: 'USD',
+            issuerMinFace: null,
+            faceIncrement: null,
+            countryCode: 'US',
+            minInvestmentDisplay: {
+              type: 'platform',
+              platformMinUSD: 1
+            },
+            assetsUnderManagement: 35000000000,
+            expenseRatio: 0.10,
+            inceptionDate: '1998-12-16',
+            fundType: 'Equity',
+            holdings: 65,
+            topHoldings: ['Berkshire Hathaway Inc.', 'JPMorgan Chase & Co.', 'Bank of America Corp.', 'Wells Fargo & Co.', 'Goldman Sachs Group Inc.'],
+            raise: {
+              status: 'active',
+              softCap: 0,
+              hardCap: 0,
+              amountCommitted: 0,
+              start: '2024-01-01',
+              end: '2024-12-31'
+            }
+          },
+          {
+            id: 'XLK',
+            category: 'ETFs',
+            name: 'Technology Select Sector SPDR Fund',
+            issuer: 'State Street Global Advisors',
+            ticker: 'XLK',
+            sector: 'Technology',
+            currency: 'USD',
+            priceClean: 198.45,
+            change24h: 3.2,
+            minInvestment: 1,
+            increment: 1,
+            faceCurrency: 'USD',
+            issuerMinFace: null,
+            faceIncrement: null,
+            countryCode: 'US',
+            minInvestmentDisplay: {
+              type: 'platform',
+              platformMinUSD: 1
+            },
+            assetsUnderManagement: 45000000000,
+            expenseRatio: 0.10,
+            inceptionDate: '1998-12-16',
+            fundType: 'Equity',
+            holdings: 75,
+            topHoldings: ['Apple Inc.', 'Microsoft Corporation', 'NVIDIA Corporation', 'Broadcom Inc.', 'Oracle Corp.'],
+            raise: {
+              status: 'active',
+              softCap: 0,
+              hardCap: 0,
+              amountCommitted: 0,
+              start: '2024-01-01',
+              end: '2024-12-31'
+            }
+          },
+          {
+            id: 'XLE',
+            category: 'ETFs',
+            name: 'Energy Select Sector SPDR Fund',
+            issuer: 'State Street Global Advisors',
+            ticker: 'XLE',
+            sector: 'Energy',
+            currency: 'USD',
+            priceClean: 95.67,
+            change24h: 1.5,
+            minInvestment: 1,
+            increment: 1,
+            faceCurrency: 'USD',
+            issuerMinFace: null,
+            faceIncrement: null,
+            countryCode: 'US',
+            minInvestmentDisplay: {
+              type: 'platform',
+              platformMinUSD: 1
+            },
+            assetsUnderManagement: 25000000000,
+            expenseRatio: 0.10,
+            inceptionDate: '1998-12-16',
+            fundType: 'Equity',
+            holdings: 25,
+            topHoldings: ['Exxon Mobil Corp.', 'Chevron Corp.', 'ConocoPhillips', 'EOG Resources Inc.', 'Pioneer Natural Resources Co.'],
+            raise: {
+              status: 'active',
+              softCap: 0,
+              hardCap: 0,
+              amountCommitted: 0,
+              start: '2024-01-01',
+              end: '2024-12-31'
+            }
+          },
+          {
+            id: 'XLV',
+            category: 'ETFs',
+            name: 'Health Care Select Sector SPDR Fund',
+            issuer: 'State Street Global Advisors',
+            ticker: 'XLV',
+            sector: 'Healthcare',
+            currency: 'USD',
+            priceClean: 145.23,
+            change24h: 0.8,
+            minInvestment: 1,
+            increment: 1,
+            faceCurrency: 'USD',
+            issuerMinFace: null,
+            faceIncrement: null,
+            countryCode: 'US',
+            minInvestmentDisplay: {
+              type: 'platform',
+              platformMinUSD: 1
+            },
+            assetsUnderManagement: 28000000000,
+            expenseRatio: 0.10,
+            inceptionDate: '1998-12-16',
+            fundType: 'Equity',
+            holdings: 65,
+            topHoldings: ['UnitedHealth Group Inc.', 'Johnson & Johnson', 'Eli Lilly and Co.', 'AbbVie Inc.', 'Merck & Co. Inc.'],
             raise: {
               status: 'active',
               softCap: 0,
@@ -591,7 +1231,7 @@ export default function MarketsPage() {
     }
   }, [])
 
-  const categories = ['All', ...Array.from(new Set(products.map(p => p.category))), 'Equities', 'ETFs', 'Primary Corporate Issuance']
+  const categories = ['All', ...Array.from(new Set(products.map(p => p.category))), 'Primary Corporate Issuance']
   
   const applyFilters = (productList: Product[]) => {
     return productList.filter(product => {
@@ -610,11 +1250,6 @@ export default function MarketsPage() {
       
       // Tenor filter
       if (filters.tenor !== 'All' && product.tenor !== filters.tenor) {
-        return false
-      }
-      
-      // Sector filter for Equities and ETFs
-      if (filters.sector !== 'All' && product.sector !== filters.sector) {
         return false
       }
       
@@ -714,14 +1349,14 @@ export default function MarketsPage() {
     }
   }
 
-  const formatPercentage = (value: number) => `${value.toFixed(2)}%`
+  const formatPercentage = (value: number | undefined) => value !== undefined ? `${value.toFixed(2)}%` : 'N/A'
 
-  const formatDate = (date: string) => {
-    return new Date(date).toLocaleDateString('en-US', {
+  const formatDate = (date: string | undefined) => {
+    return date ? new Date(date).toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'short',
       day: 'numeric',
-    })
+    }) : 'N/A'
   }
 
   const getRatingColor = (rating: string) => {
@@ -960,8 +1595,8 @@ export default function MarketsPage() {
                 <h1 className="text-xl md:text-2xl font-bold gradient-text">Yield Desk Markets</h1>
                 <p className="text-muted-foreground mt-1 text-sm md:text-base">
                   Invest in tokenised bonds with transparent pricing and instant settlement.
-                </p>
-              </div>
+            </p>
+          </div>
               <div className="flex flex-col md:text-right">
                 <div className="flex items-center gap-2 text-sm">
                   <div className={`w-2 h-2 rounded-full ${isConnected ? 'bg-green-500' : 'bg-red-500'}`}></div>
@@ -1028,28 +1663,6 @@ export default function MarketsPage() {
                 <option value="20Y">20 Years</option>
                 <option value="30Y">30 Years</option>
                 <option value="40Y">40 Years</option>
-              </select>
-            </div>
-
-            {/* Sector Filter */}
-            <div>
-              <label className="text-sm font-medium mb-2 block">Sector</label>
-              <select
-                value={filters.sector}
-                onChange={(e) => setFilters(prev => ({ ...prev, sector: e.target.value }))}
-                className="w-full px-3 py-2 rounded-md border border-input bg-background text-sm"
-              >
-                <option value="All">All Sectors</option>
-                <option value="Technology">Technology</option>
-                <option value="Automotive">Automotive</option>
-                <option value="Broad Market">Broad Market</option>
-                <option value="Innovation">Innovation</option>
-                <option value="International">International</option>
-                <option value="Healthcare">Healthcare</option>
-                <option value="Financial">Financial</option>
-                <option value="Energy">Energy</option>
-                <option value="Consumer">Consumer</option>
-                <option value="Industrial">Industrial</option>
               </select>
             </div>
 
@@ -1120,8 +1733,7 @@ export default function MarketsPage() {
                 ytmSort: 'None',
                 maturitySort: 'None',
                 raiseSizeSort: 'None',
-                minCommitmentSort: 'None',
-                sector: 'All'
+                minCommitmentSort: 'None'
               })}
               className="px-4 py-2 text-sm border border-input bg-background hover:bg-accent hover:text-accent-foreground rounded-md transition-colors w-full md:w-auto"
             >
@@ -1413,11 +2025,11 @@ export default function MarketsPage() {
                                product.category === 'ETFs' ? 'Price' : 'YTM'}
                             </span>
                             <div className="text-right">
-                              <span className="font-semibold text-brand-accent text-sm">
+                            <span className="font-semibold text-brand-accent text-sm">
                                 {product.category === 'Equities' || product.category === 'ETFs' 
                                   ? `$${product.priceClean.toFixed(2)}`
                                   : formatPercentage(product.ytmPct)}
-                              </span>
+                            </span>
                               {product.change24h !== undefined && (
                                 <div className={`text-xs ${product.change24h >= 0 ? 'text-green-600' : 'text-red-600'}`}>
                                   {product.change24h >= 0 ? '+' : ''}{product.change24h.toFixed(2)}%
@@ -1482,9 +2094,9 @@ export default function MarketsPage() {
                                 )}
                               </div>
                               {product.category !== 'Equities' && product.category !== 'ETFs' && (
-                                <div className="text-xs text-muted-foreground">
-                                  ({formatPriceDisplay(product.priceClean, product.currency).local})
-                                </div>
+                              <div className="text-xs text-muted-foreground">
+                                ({formatPriceDisplay(product.priceClean, product.currency).local})
+                              </div>
                               )}
                             </div>
                           </div>
@@ -1625,29 +2237,29 @@ export default function MarketsPage() {
                   </>
                 ) : (
                   <>
-                    <div>
-                      <span className="text-muted-foreground">Rating:</span>
-                      <div className="font-medium">{selectedProduct.rating?.sp || 'N/A'}</div>
-                    </div>
-                    <div>
-                      <span className="text-muted-foreground">Coupon:</span>
-                      <div className="font-medium">
-                        {selectedProduct.couponType === 'Discount' 
-                          ? 'Discount' 
-                          : `${formatPercentage(selectedProduct.couponRatePct)} ${selectedProduct.couponFrequency}`
-                        }
-                      </div>
-                    </div>
-                    <div>
-                      <span className="text-muted-foreground">Maturity:</span>
-                      <div className="font-medium">{formatDate(selectedProduct.maturityDate)}</div>
-                    </div>
-                    <div>
-                      <span className="text-muted-foreground">YTM:</span>
-                      <div className="font-medium text-brand-accent">
-                        {formatPercentage(selectedProduct.ytmPct)}
-                      </div>
-                    </div>
+                <div>
+                  <span className="text-muted-foreground">Rating:</span>
+                  <div className="font-medium">{selectedProduct.rating?.sp || 'N/A'}</div>
+                </div>
+                <div>
+                  <span className="text-muted-foreground">Coupon:</span>
+                  <div className="font-medium">
+                    {selectedProduct.couponType === 'Discount' 
+                      ? 'Discount' 
+                          : `${formatPercentage(selectedProduct.couponRatePct)} ${selectedProduct.couponFrequency || ''}`
+                    }
+                  </div>
+                </div>
+                <div>
+                  <span className="text-muted-foreground">Maturity:</span>
+                  <div className="font-medium">{formatDate(selectedProduct.maturityDate)}</div>
+                </div>
+                <div>
+                  <span className="text-muted-foreground">YTM:</span>
+                  <div className="font-medium text-brand-accent">
+                    {formatPercentage(selectedProduct.ytmPct)}
+                  </div>
+                </div>
                   </>
                 )}
                 <div>
