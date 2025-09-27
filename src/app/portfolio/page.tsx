@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import ReactCountryFlag from 'react-country-flag'
+import { useAuth } from '../../contexts/SimpleAuthContext'
 
 interface PortfolioItem {
   id: string
@@ -55,6 +56,7 @@ interface Product {
 }
 
 export default function PortfolioPage() {
+  const { isAuthenticated, user } = useAuth()
   const [portfolio, setPortfolio] = useState<PortfolioItem[]>([])
   const [walletBalance, setWalletBalance] = useState(10000)
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null)
@@ -66,21 +68,34 @@ export default function PortfolioPage() {
   const [activeTab, setActiveTab] = useState<'committed' | 'active' | 'matured'>('committed')
 
   useEffect(() => {
-    // Load portfolio and wallet balance from localStorage
-    const savedPortfolio = localStorage.getItem('portfolio')
-    const savedWalletBalance = localStorage.getItem('walletBalance')
-    
-    if (savedPortfolio) {
-      setPortfolio(JSON.parse(savedPortfolio))
-    }
-    
-    if (savedWalletBalance) {
-      setWalletBalance(parseFloat(savedWalletBalance))
+    // Load user-specific portfolio and wallet balance from localStorage
+    if (user) {
+      const userPortfolioKey = `portfolio_${user.id}`
+      const userBalanceKey = `walletBalance_${user.id}`
+      
+      const savedPortfolio = localStorage.getItem(userPortfolioKey)
+      const savedWalletBalance = localStorage.getItem(userBalanceKey)
+      
+      if (savedPortfolio) {
+        setPortfolio(JSON.parse(savedPortfolio))
+      } else {
+        setPortfolio([])
+      }
+      
+      if (savedWalletBalance) {
+        setWalletBalance(parseFloat(savedWalletBalance))
+      } else {
+        setWalletBalance(10000)
+      }
+    } else {
+      // Reset to defaults if no user (logged out)
+      setPortfolio([])
+      setWalletBalance(10000)
     }
 
     // Fetch live YTM data from markets
     fetchYTMData()
-  }, [])
+  }, [user])
 
   const fetchYTMData = async () => {
     try {
@@ -242,15 +257,17 @@ export default function PortfolioPage() {
         return p
       }).filter(Boolean) as PortfolioItem[]
 
-      // Save to localStorage
-      localStorage.setItem('portfolio', JSON.stringify(updated))
+      // Save to localStorage with user-specific key
+      const userKey = user ? `portfolio_${user.id}` : 'portfolio'
+      localStorage.setItem(userKey, JSON.stringify(updated))
       return updated
     })
 
     // Update wallet balance
     const newBalance = walletBalance + amount
     setWalletBalance(newBalance)
-    localStorage.setItem('walletBalance', newBalance.toString())
+    const balanceKey = user ? `walletBalance_${user.id}` : 'walletBalance'
+    localStorage.setItem(balanceKey, newBalance.toString())
 
     // Close modal
     setIsWithdrawModalOpen(false)
@@ -306,7 +323,8 @@ export default function PortfolioPage() {
       }
       
       const updated = [...prev, ...newPositions]
-      localStorage.setItem('portfolio', JSON.stringify(updated))
+      const userKey = user ? `portfolio_${user.id}` : 'portfolio'
+      localStorage.setItem(userKey, JSON.stringify(updated))
       return updated
     })
   }
@@ -326,10 +344,32 @@ export default function PortfolioPage() {
         return position
       })
       
-      // Save to localStorage
-      localStorage.setItem('portfolio', JSON.stringify(updated))
+      // Save to localStorage with user-specific key
+      const userKey = user ? `portfolio_${user.id}` : 'portfolio'
+      localStorage.setItem(userKey, JSON.stringify(updated))
       return updated
     })
+  }
+
+  // Redirect to login if not authenticated
+  if (!isAuthenticated) {
+    return (
+      <div className="min-h-screen bg-brand-background flex items-center justify-center">
+        <div className="text-center max-w-md mx-auto p-8">
+          <div className="text-4xl mb-4">🔒</div>
+          <h1 className="text-2xl font-bold mb-4">Authentication Required</h1>
+          <p className="text-muted-foreground mb-6">
+            Please sign in to view your portfolio and manage your investments.
+          </p>
+          <a 
+            href="/account"
+            className="inline-flex items-center px-6 py-3 bg-brand-primary text-white rounded-md hover:bg-brand-primary/90 transition-colors"
+          >
+            Sign In
+          </a>
+        </div>
+      </div>
+    )
   }
 
   return (

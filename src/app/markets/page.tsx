@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import ReactCountryFlag from 'react-country-flag'
 import { useRealTimePricing } from '../../lib/useRealTimePricing'
 import CandlestickChart from '../../components/CandlestickChart'
+import { useAuth } from '../../contexts/SimpleAuthContext'
 
 interface Product {
   id: string
@@ -115,6 +116,8 @@ interface CompanyInfo {
 }
 
 export default function MarketsPage() {
+  const { isAuthenticated, user } = useAuth()
+  
   const [products, setProducts] = useState<Product[]>([])
   const [primaryDeals, setPrimaryDeals] = useState<PrimaryDeal[]>([])
   const [selectedCategory, setSelectedCategory] = useState('All')
@@ -123,8 +126,8 @@ export default function MarketsPage() {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [isPrimaryModalOpen, setIsPrimaryModalOpen] = useState(false)
   const [loading, setLoading] = useState(true)
-  const [walletBalance, setWalletBalance] = useState(10000) // Starting balance
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
+  const [walletBalance, setWalletBalance] = useState(10000)
   const [portfolio, setPortfolio] = useState<Array<{
     id: string
     productId: string
@@ -1218,18 +1221,31 @@ export default function MarketsPage() {
         setLoading(false)
       })
 
-    // Load portfolio and wallet balance from localStorage
-    const savedPortfolio = localStorage.getItem('portfolio')
-    const savedWalletBalance = localStorage.getItem('walletBalance')
-    
-    if (savedPortfolio) {
-      setPortfolio(JSON.parse(savedPortfolio))
+    // Load user-specific portfolio and wallet balance from localStorage
+    if (user) {
+      const userPortfolioKey = `portfolio_${user.id}`
+      const userBalanceKey = `walletBalance_${user.id}`
+      
+      const savedPortfolio = localStorage.getItem(userPortfolioKey)
+      const savedWalletBalance = localStorage.getItem(userBalanceKey)
+      
+      if (savedPortfolio) {
+        setPortfolio(JSON.parse(savedPortfolio))
+      } else {
+        setPortfolio([])
+      }
+      
+      if (savedWalletBalance) {
+        setWalletBalance(parseFloat(savedWalletBalance))
+      } else {
+        setWalletBalance(10000)
+      }
+    } else {
+      // Reset to defaults if no user (logged out)
+      setPortfolio([])
+      setWalletBalance(10000)
     }
-    
-    if (savedWalletBalance) {
-      setWalletBalance(parseFloat(savedWalletBalance))
-    }
-  }, [])
+  }, [user])
 
   const categories = ['All', ...Array.from(new Set(products.map(p => p.category))), 'Primary Corporate Issuance']
   
@@ -1531,13 +1547,18 @@ export default function MarketsPage() {
   }
 
   const handleCommitFunds = (product: Product, amount: number) => {
+    if (!isAuthenticated) {
+      alert('Please sign in to invest')
+      return
+    }
+
     if (amount <= 0) {
       alert('Please enter a valid amount')
       return
     }
 
     if (amount < product.minInvestment) {
-      alert(`Minimum investment is ${formatCurrency(product.minInvestment, product.currency)}`)
+      alert(`Minimum investment is ${formatCurrency(product.minInvestment, 'USD')}`)
       return
     }
 
@@ -1556,21 +1577,23 @@ export default function MarketsPage() {
       productName: product.name,
       amount: amount,
       price: product.priceClean,
-      ytmPct: product.ytmPct,
       timestamp: new Date().toISOString(),
       status: 'committed' as const
     }
 
     setPortfolio(prev => [...prev, portfolioItem])
 
-    // Save to localStorage for portfolio page
+    // Save to localStorage with user-specific key
+    const userKey = user ? `portfolio_${user.id}` : 'portfolio'
+    const balanceKey = user ? `walletBalance_${user.id}` : 'walletBalance'
+    
     const updatedPortfolio = [...portfolio, portfolioItem]
-    localStorage.setItem('portfolio', JSON.stringify(updatedPortfolio))
-    localStorage.setItem('walletBalance', (walletBalance - amount).toString())
+    localStorage.setItem(userKey, JSON.stringify(updatedPortfolio))
+    localStorage.setItem(balanceKey, (walletBalance - amount).toString())
 
     // Close modal and show success
     closeModal()
-    alert(`Successfully committed ${formatCurrency(amount, product.currency)} to ${product.name}`)
+    alert(`Successfully committed ${formatCurrency(amount, 'USD')} to ${product.name}`)
   }
 
   if (loading) {
@@ -2274,12 +2297,12 @@ export default function MarketsPage() {
                 <div>
                   <span className="text-muted-foreground">Min Investment:</span>
                   <div className="font-medium">
-                    {formatCurrency(selectedProduct.minInvestment, selectedProduct.currency)}
+                    {formatCurrency(selectedProduct.minInvestment, 'USD')}
                   </div>
                 </div>
               </div>
 
-              {/* Candlestick Chart */}
+              {/* Price Chart */}
               <div className="border-t border-border pt-6">
                 <CandlestickChart
                   instrumentKey={selectedProduct.id}
@@ -2307,8 +2330,8 @@ export default function MarketsPage() {
               <div className="space-y-2">
                 <div className="text-sm font-medium">Investment Limits</div>
                 <div className="text-sm text-muted-foreground space-y-1">
-                  <div>Min: {formatCurrency(selectedProduct.minInvestment, selectedProduct.currency)}</div>
-                  <div>Increment: {formatCurrency(selectedProduct.increment, selectedProduct.currency)}</div>
+                  <div>Min: {formatCurrency(selectedProduct.minInvestment, 'USD')}</div>
+                  <div>Increment: {formatCurrency(selectedProduct.increment, 'USD')}</div>
                 </div>
               </div>
 
@@ -2320,7 +2343,7 @@ export default function MarketsPage() {
                 </div>
                 {walletBalance < selectedProduct.minInvestment && (
                   <div className="text-xs text-red-600 bg-red-50 border border-red-200 rounded-md p-2">
-                    ⚠️ Insufficient balance for minimum investment of {formatCurrency(selectedProduct.minInvestment, selectedProduct.currency)}
+                    ⚠️ Insufficient balance for minimum investment of {formatCurrency(selectedProduct.minInvestment, 'USD')}
                   </div>
                 )}
               </div>
@@ -2337,12 +2360,12 @@ export default function MarketsPage() {
                     min={selectedProduct.minInvestment}
                     max={walletBalance}
                     step={selectedProduct.increment}
-                    placeholder={`Min: ${formatCurrency(selectedProduct.minInvestment, selectedProduct.currency)}, Max: ${formatCurrency(walletBalance, 'USD')}`}
+                    placeholder={`Min: ${formatCurrency(selectedProduct.minInvestment, 'USD')}, Max: ${formatCurrency(walletBalance, 'USD')}`}
                     className="w-full px-3 py-2 rounded-md border border-input bg-background text-sm"
                   />
                   <div className="text-xs text-muted-foreground mt-1">
-                    Available balance: {formatCurrency(walletBalance, 'USD')} | 
-                    Min investment: {formatCurrency(selectedProduct.minInvestment, selectedProduct.currency)}
+                    Min investment: {formatCurrency(selectedProduct.minInvestment, 'USD')} | 
+                    Available balance: {formatCurrency(walletBalance, 'USD')}
                   </div>
                 </div>
 
